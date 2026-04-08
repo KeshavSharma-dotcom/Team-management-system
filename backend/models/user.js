@@ -1,8 +1,8 @@
 const mongoose = require("mongoose")
 const bcrypt = require("bcryptjs")
 
-const adminSchema = mongoose.Schema({
-    adminEmail : {
+const userSchema = mongoose.Schema({
+    email : {
         type : String,
         required : true,
         unique : true,
@@ -13,18 +13,20 @@ const adminSchema = mongoose.Schema({
         required : true,
         minlength : 8
     },
-    adminName : {
+    name : {
         type : String,
-        required : true
+        required : true,
+        trim : true
     },
     role : {
         type : String,
-        default : "Admin"
+        enum : ["admin","member"],
+        default : "member"
     }
 
 }, {timestamps : true})
 
-adminSchema.pre("save", async function(){
+userSchema.pre("save", async function(){
     if (!this.isModified("password")) return;
     try{
         const salt = await bcrypt.genSalt(Number(process.env.SALT_ROUNDS || 10))
@@ -34,4 +36,4 @@ adminSchema.pre("save", async function(){
     }
 })
 
-module.exports = mongoose.model("admin", adminSchema)
+module.exports = mongoose.model("user", userSchema)

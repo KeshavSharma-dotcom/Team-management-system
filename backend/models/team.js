@@ -1,19 +1,17 @@
 const mongoose = require("mongoose")
 
-const teams = mongoose.Schema({
+const teamSchema = mongoose.Schema({
     teamName : {
         type : String,
-
+        required : true,
+        trim : true
     },
-    teamCode : {
+    status : {
         type : String,
-
-    },
-    createdBy :{
-
-    },
-    createdTime : {
-
+        enum : ["public","private"],
+        default : "private",
+        required : true
     }
-    
-})
+}, {timestamps : true})
+
+module.exports = mongoose.model("team", teamSchema)
