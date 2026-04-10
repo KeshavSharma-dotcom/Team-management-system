@@ -16,8 +16,16 @@ const teamSchema = mongoose.Schema({
     status : {
         type : String,
         enum : ["public","private"],
-        default : "private",
-        required : true
+        default : "public",
+        required : true,
+    },
+    passcode:{
+        type:String,
+        minlength:8
+    },
+    isLocked : {
+        type : Boolean,
+        default:false
     },
     createdBy :{
         type : mongoose.Types.ObjectId,
@@ -28,7 +36,11 @@ const teamSchema = mongoose.Schema({
         _id : false,
         user: {type : mongoose.Types.ObjectId, ref:"User", required:true},
         role:{type : String, enum:["owner","sub-admin","member"],default:"member"}
-    }]
+    }],
+    hide:{
+        type:Boolean,
+        default:false
+    }
 }, {timestamps : true})
 
-module.exports = mongoose.model("team", teamSchema)
+module.exports = mongoose.model("Team", teamSchema)
