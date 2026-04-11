@@ -28,7 +28,7 @@ const userSchema = mongoose.Schema({
         default : "member"
     },
     otp: {
-        type:Number
+        type:String
     }
 }, {timestamps : true})
 

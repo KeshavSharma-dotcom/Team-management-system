@@ -13,7 +13,7 @@ const register = asyncWrapper(async (req ,res)=>{
         return res.status(409).json({message : "User Already Exists!"})
     }
 
-    const otp = Math.floor(100000 + Math.random() * 900000)
+    const otp = Math.floor(100000 + Math.random() * 900000).toString()
     const user = await User.create({
         email : email,
         password : password,
@@ -43,7 +43,6 @@ const verifyOtp = asyncWrapper(async (req,res)=>{
         return res.status(400).json({msg:"Invalid otp"})
     }
     user.isVerified = true
-
     await user.save()
     res.status(200).json({msg:"Registration Successfull"})
 })
@@ -61,7 +60,7 @@ const sendOtpAgain = asyncWrapper(async (req,res)=>{
         to : email,
         subject : `Account registration otp`,
         html : `<h1>Team management</h1>
-        <p>Account creation opt : <b>${otp}</b></p>`
+        <p>Account creation opt : <b>${user.otp}</b></p>`
     })
     res.status(201).json({msg : `OTP sent again to ${email}`})
 })
@@ -75,6 +74,9 @@ const login = asyncWrapper(async (req,res)=>{
     if(!user){
         return res.status(404).json({msg : "User not found!"})
     }
+    if(!user.isVerified){
+        return res.status(409).json({msg:"User not registered, please register!"})
+    }
     const passcode = await bcrypt.compare(password, user.password)
     if(!passcode){
         return res.status(409).json({msg: "Wrong Password"})
@@ -86,3 +88,45 @@ const login = asyncWrapper(async (req,res)=>{
     )
     res.status(200).json({msg : "login successfull",token,user:{name : user.name,role:user.role}})
 })
+
+const initiateFP = asyncWrapper(async (req,res)=>{
+    const {email} = req.body
+    if(!email){
+        return res.status(400).json({msg : "Provide field"})
+    }
+    const user = await User.findOne({email})
+    if(!user){
+        return res.status(404).json({msg : "User not found!"})
+    }
+    if(!user.isVerified){
+        return res.status(409).json({msg:"User not registered, please login!"})
+    }
+    user.otp = Math.floor(100000 + Math.random() * 900000).toString()
+    await user.save()
+    await sendEmail({
+        to:email,
+        subject : "Changing Password",
+        html :` <h1>Team Control Support</h1>
+        <p>Your OTP : <b>${user.otp}</b></p>`
+    })
+    res.status(200).json({msg:`OTP is send on ${email}`})
+})
+
+const resetPas = asyncWrapper(async (req,res)=>{
+    const {email, password} = req.body 
+    if(!email || !password){
+        return res.status(400).json({msg : "Provide both fields"})
+    }
+    const user = await User.findOne({email})
+    if(!user){
+        return res.status(404).json({msg : "User not found!"})
+    }
+    if(!user.isVerified){
+        return res.status(409).json({msg:"User not registered, please login!"})
+    }
+    user.password = password
+    await user.save()
+    res.status(200).json({msg:"Password changed successfully!"})
+})
+
+module.exports = {register, verifyOtp, sendOtpAgain, login, initiateFP, resetPas}
