@@ -82,7 +82,7 @@ const login = asyncWrapper(async (req,res)=>{
         return res.status(409).json({msg: "Wrong Password"})
     }
     const token = jwt.sign(
-        {userId :user._id , role : user.role},
+        {userId :user._id , role : user.role, userName : user.name},
         process.env.JWT_SECRET,
         {expiresIn: '1d'}
     )
@@ -113,18 +113,16 @@ const initiateFP = asyncWrapper(async (req,res)=>{
 })
 
 const resetPas = asyncWrapper(async (req,res)=>{
-    const {email, password} = req.body 
-    if(!email || !password){
-        return res.status(400).json({msg : "Provide both fields"})
-    }
+    const {email, password, otp} = req.body 
+    if(!email || !password || !otp) return res.status(400).json({msg : "Provide all fields"})
+    
     const user = await User.findOne({email})
-    if(!user){
-        return res.status(404).json({msg : "User not found!"})
+    if(!user || user.otp !== otp) {
+        return res.status(401).json({msg: "Invalid or expired OTP"})
     }
-    if(!user.isVerified){
-        return res.status(409).json({msg:"User not registered, please login!"})
-    }
+    
     user.password = password
+    user.otp = null 
     await user.save()
     res.status(200).json({msg:"Password changed successfully!"})
 })
