@@ -1,5 +1,8 @@
 const Task = require("../models/task")
 const Team = require("../models/team")
+const { GoogleGenerativeAI } = require("@google/generative-ai")
+const genAI = new GoogleGenerativeAI(process.env.API_KEY)
+const asyncWrapper = require("../middlewares/asyncWrapper")
 
 const createTask = asyncWrapper(async (req, res) => {
     const { teamId, title, description } = req.body
@@ -37,3 +40,28 @@ const addComment = asyncWrapper(async (req, res) => {
     await task.save()
     res.status(200).json({ msg: "Comment added" })
 })
+
+const suggestTasks = asyncWrapper(async (req, res) => {
+    const { goal } = req.body
+    if (!goal) return res.status(400).json({ msg: "Please provide a goal" })
+
+    const model = genAI.getGenerativeModel({ 
+        model: "gemini-1.5-flash",
+        generationConfig: { responseMimeType: "application/json" }
+    })
+
+    const prompt = `You are a project manager. Based on the goal: "${goal}", generate 3 specific tasks. 
+    Return strictly JSON: [{"title": "task title", "description": "short description"}]`
+
+    const result = await model.generateContent(prompt)
+    const suggestedTasks = JSON.parse(result.response.text())
+
+    res.status(200).json({ suggestions: suggestedTasks })
+})
+
+module.exports = {
+    createTask,
+    toggleTaskStatus,
+    addComment,
+    suggestTasks 
+}

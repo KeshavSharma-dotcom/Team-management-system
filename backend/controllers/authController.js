@@ -84,7 +84,7 @@ const login = asyncWrapper(async (req,res)=>{
     const token = jwt.sign(
         {userId :user._id , role : user.role, userName : user.name},
         process.env.JWT_SECRET,
-        {expiresIn: '1d'}
+        {expiresIn: process.env.JWT_DURATION}
     )
     res.status(200).json({msg : "login successfull",token,user:{name : user.name,role:user.role}})
 })

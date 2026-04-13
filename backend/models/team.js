@@ -32,22 +32,33 @@ const teamSchema = mongoose.Schema({
         ref : "User",
         required : [true, "Please provide creater ID"]
     },
-    members : [{
-        _id : false,
-        user: {type : mongoose.Types.ObjectId, ref:"User", required:true},
-        role:{type : String, enum:["owner","sub-admin","member"],default:"member"}
+    members: [{
+        _id: false,
+        user: { type: mongoose.Types.ObjectId, ref: "User", required: true },
+        role: { type: String, enum: ["owner", "sub-admin", "member"], default: "member" },
+        joinedAt: {
+            type: Date,
+            default: Date.now 
+        }
     }],
     hide:{
         type:Boolean,
         default:false
     },
     discussions: [{
-        _id: { type: mongoose.Types.ObjectId, auto: true },
         user: { type: mongoose.Types.ObjectId, ref: "User", required: true },
-        userName: String, 
+        userName: String,
         text: { type: String, required: true },
-        createdAt: { type: Date, default: Date.now }
+        sentAt: {
+            type: Date,
+            default: Date.now
+        }
     }],
-}, {timestamps : true})
+    createdAt: {
+        type: Date,
+        default: Date.now 
+    },
+})
 
+teamSchema.index({ teamCode: 1 })
 module.exports = mongoose.model("Team", teamSchema)
