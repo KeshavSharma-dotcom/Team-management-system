@@ -1,0 +1,32 @@
+.login-header {
+    margin-bottom: 30px;
+}
+
+.login-icon-box {
+    width: 50px;
+    height: 50px;
+    background: rgba(129, 140, 248, 0.1);
+    border-radius: 12px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0 auto 15px;
+    color: #818cf8;
+}
+
+.forgot-link-container {
+    text-align: right;
+    margin: -8px 0 20px 0;
+}
+
+.forgot-link-container a {
+    color: #94a3b8;
+    text-decoration: none;
+    font-size: 0.85rem;
+    transition: 0.3s;
+}
+
+.forgot-link-container a:hover {
+    color: #818cf8;
+}
+
