@@ -60,5 +60,4 @@ const teamSchema = mongoose.Schema({
     },
 })
 
-teamSchema.index({ teamCode: 1 })
 module.exports = mongoose.model("Team", teamSchema)
