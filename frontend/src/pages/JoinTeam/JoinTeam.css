@@ -1,0 +1,104 @@
+.join-page {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 60px 20px;
+}
+
+.join-header {
+    text-align: center;
+    margin-bottom: 50px;
+}
+
+.join-header h1 { font-size: 3rem; font-weight: 800; margin-bottom: 10px; }
+.join-header h1 span {
+    background: linear-gradient(135deg, #818cf8 0%, #c084fc 100%);
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.search-container {
+    max-width: 600px;
+    margin: 30px auto 0;
+    position: relative;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 16px;
+    padding: 15px 20px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.search-container input {
+    background: transparent;
+    border: none;
+    outline: none;
+    color: white;
+    width: 100%;
+    font-size: 1.1rem;
+}
+
+.join-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 25px;
+}
+
+.join-card {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 20px;
+    padding: 30px;
+    transition: 0.3s;
+}
+
+.card-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    color: #818cf8;
+}
+
+.member-count {
+    font-size: 0.8rem;
+    color: #94a3b8;
+    background: rgba(255, 255, 255, 0.05);
+    padding: 4px 10px;
+    border-radius: 20px;
+}
+
+.team-code-badge {
+    display: inline-block;
+    color: #c084fc;
+    font-family: monospace;
+    margin: 10px 0 25px;
+}
+
+.join-btn {
+    width: 100%;
+    padding: 12px;
+    border-radius: 12px;
+    border: none;
+    background: #6366f1;
+    color: white;
+    font-weight: 700;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.join-btn:hover { background: #4f46e5; }
+
+.private-join-footer {
+    margin-top: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    color: #94a3b8;
+    font-style: italic;
+}

@@ -49,7 +49,7 @@ const Dashboard = () => {
         >
             <header className="dashboard-header">
                 <div className="welcome-text">
-                    <h1>Welcome back, <span>{user.name.split(' ')[0]}!</span></h1>
+                    <h1>Welcome, <span>{user.name.split(' ')[0]}!</span></h1>
                     <p>Here's what's happening with your teams today.</p>
                 </div>
                 <div className="header-actions">

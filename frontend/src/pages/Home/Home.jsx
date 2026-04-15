@@ -1,9 +1,18 @@
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { BrainCircuit, Target, Users, Zap, ShieldCheck } from 'lucide-react'
 import './Home.css'
+import { useEffect } from 'react'
 
 const Home = () => {
+  const navigate = useNavigate()
+  
+  useEffect(()=>{
+    const token = localStorage.getItem("token")
+    if(token){
+      navigate("dashboard")
+    }
+  },[navigate])
   const staggerContainer = {
     hidden: { opacity: 0 },
     visible: {
