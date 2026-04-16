@@ -11,7 +11,8 @@ const {
     makeRole,
     addTeamMessage,
     getTeamDiscussions,
-    summarizeDiscussion 
+    summarizeDiscussion,
+    updateTeamSettings
 } = require("../controllers/teamController")
 
 router.get("/all", authenticateUser, allTeams)
@@ -24,5 +25,6 @@ router.patch("/role", authenticateUser, makeRole)
 router.get("/:teamId/chat", authenticateUser, getTeamDiscussions)
 router.post("/chat", authenticateUser, addTeamMessage)
 router.get("/:teamId/summarize", authenticateUser, summarizeDiscussion)
+router.patch("/:teamId/settings", authenticateUser, updateTeamSettings)
 
 module.exports = router

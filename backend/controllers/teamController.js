@@ -83,6 +83,25 @@ const setPasscode = asyncWrapper(async (req,res)=>{
     res.status(201).json({msg:"passcode created"})
 })
 
+const updateTeamSettings = asyncWrapper(async (req, res) => {
+    const { teamId } = req.params;
+    const { teamName, status, hide } = req.body;
+
+    const team = await Team.findById(teamId);
+    if (!team) return res.status(404).json({ msg: "Team not found" });
+
+    if (team.createdBy.toString() !== req.user.userId) {
+        return res.status(403).json({ msg: "Access denied: Only owners can edit settings" });
+    }
+
+    if (teamName) team.teamName = teamName;
+    if (status) team.status = status;
+    if (typeof hide !== 'undefined') team.hide = hide;
+
+    await team.save();
+    res.status(200).json({ msg: "Settings updated successfully", team });
+});
+
 const makeRole = asyncWrapper(async (req, res) => {
     const { teamCode, targetUserId, newRole } = req.body
     const team = await Team.findOne({ teamCode })
@@ -129,7 +148,6 @@ const getTeamDiscussions = asyncWrapper(async (req, res) => {
     res.status(200).json({ discussions: team.discussions })
 })
 
-// --- AI CONTROLLERS ---
 
 const summarizeDiscussion = asyncWrapper(async (req, res) => {
     const { teamId } = req.params
@@ -157,5 +175,5 @@ module.exports = {
     addTeamMessage,
     getTeamDiscussions,
     summarizeDiscussion,
-    
+    updateTeamSettings
 }
