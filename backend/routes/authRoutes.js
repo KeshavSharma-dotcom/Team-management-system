@@ -5,7 +5,7 @@ const {register, verifyOtp, sendOtpAgain, login, initiateFP, resetPas} = require
 router.post("/register",register)
 router.post("/verify",verifyOtp)
 router.post("/login",login);
-router.post("/sendOtpAgain",sendOtpAgain)
+router.post("/resend-otp",sendOtpAgain)
 router.post("/FP",initiateFP)
 router.post("/RP",resetPas)
 

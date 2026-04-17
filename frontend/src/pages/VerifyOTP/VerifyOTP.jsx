@@ -47,7 +47,7 @@ const VerifyOTP = () => {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email })
             })
-            if (response.ok) alert('New OTP sent!')
+            if (response.ok) alert('OTP sent again!')
         } catch (error) {
             alert('Failed to resend')
         }
