@@ -6,6 +6,7 @@ const {
     createTeam,
     joinTeam,
     joinViaCode,
+    myTeams,
     setHide,
     setPasscode,
     makeRole,
@@ -19,6 +20,7 @@ router.get("/all", authenticateUser, allTeams)
 router.post("/create", authenticateUser, createTeam)
 router.post("/join", authenticateUser, joinTeam)
 router.post("/join-code", authenticateUser, joinViaCode)
+router.get("/my-teams", authenticateUser, myTeams)
 router.patch("/hide", authenticateUser, setHide)
 router.patch("/lock", authenticateUser, setPasscode)
 router.patch("/role", authenticateUser, makeRole)

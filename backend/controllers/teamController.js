@@ -22,6 +22,21 @@ const createTeam = asyncWrapper(async (req,res)=>{
     res.status(201).json({ msg: "Team created successfully", team })
 })
 
+const myTeams = asyncWrapper(async (req, res) => {
+    
+    const teams = await Team.find({
+        "members.user": req.user.userId
+    })
+    .populate("members.user", "name email") 
+    .sort("-updatedAt")
+
+    res.status(200).json({
+        success: true,
+        count: teams.length,
+        teams
+    })
+})
+
 const joinTeam = asyncWrapper(async (req ,res)=>{
     const { teamCode } = req.body
     if(!teamCode) return res.status(400).json({msg:"bad req"})
@@ -168,6 +183,7 @@ module.exports = {
     allTeams,
     createTeam,
     joinTeam,
+    myTeams,
     joinViaCode,
     setHide,
     setPasscode,
