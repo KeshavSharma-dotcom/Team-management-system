@@ -15,6 +15,8 @@ import JoinTeam from './pages/JoinTeam/JoinTeam.jsx'
 import TeamDetails from './pages/TeamDetails/TeamDetails.jsx'
 import TeamSettings from './pages/TeamSettings/TeamSettings.jsx'
 import Tasks from './pages/Tasks/Tasks.jsx'
+import Profile from './pages/Profile/Profile.jsx'
+import MyTeams from './pages/MyTeams/MyTeams.jsx'
 
 const App = () => {
     const location = useLocation()
@@ -40,6 +42,8 @@ const App = () => {
                     <Route path="/tasks" element={<ProtectedRoute><Tasks/></ProtectedRoute>} />
                     <Route path="/team/:teamId" element={<ProtectedRoute><TeamDetails/></ProtectedRoute>} />
                     <Route path="/team/:teamId/settings" element={<ProtectedRoute><TeamSettings/></ProtectedRoute>} />
+                    <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
+                    <Route path="/myteams" element={<ProtectedRoute><MyTeams/></ProtectedRoute>} />
 
                     <Route path="*" element={<div className="temp-page">404 - Not Found</div>} />
                 </Routes>

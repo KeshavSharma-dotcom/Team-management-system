@@ -54,7 +54,7 @@ const NavBar = () => {
                     {isLoggedIn ? (
                         <>
                             <li><Link to="/dashboard" className={`nav-links ${isActive('/dashboard')}`} onClick={() => setIsOpen(false)}><LayoutDashboard size={18} /> Dashboard</Link></li>
-                            <li><Link to="/teams" className={`nav-links ${isActive('/teams')}`} onClick={() => setIsOpen(false)}><Users size={18} /> Teams</Link></li>
+                            <li><Link to="/myteams" className={`nav-links ${isActive('/teams')}`} onClick={() => setIsOpen(false)}><Users size={18} /> Teams</Link></li>
                             <li><Link to="/tasks" className={`nav-links ${isActive('/tasks')}`} onClick={() => setIsOpen(false)}><CheckSquare size={18} /> Tasks</Link></li>
                         </>
                     ) : (
@@ -88,7 +88,7 @@ const NavBar = () => {
                                         <div className="large-avatar">
                                             <img src={`https://ui-avatars.com/api/?name=${userData.name}&background=6366f1&color=fff`} alt="avatar" />
                                         </div>
-                                        <div className="user-details">
+                                        <div className="user-details" onClick={()=>{navigate("/profile")}}>
                                             <h4>{userData.name}</h4>
                                             <p><Mail size={12} /> {userData.email}</p>
                                         </div>
