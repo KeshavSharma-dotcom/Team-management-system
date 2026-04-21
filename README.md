@@ -24,6 +24,17 @@ Built with **React.js and Vite**.
 
 ---
 
+## ✨ Key Features
+
+- **🤖 AI Insights**: Powered by Google Gemini. Summarize long team discussions into bullet points and generate project tasks automatically.
+- **👥 Team Management**: Create teams, join via unique invite codes, and manage roles (Owner/Member).
+- **🔒 Secure Auth**: JWT-based authentication with OTP verification for primary and secondary emails.
+- **💬 Real-time Discussion**: Integrated team chat with user avatars and owner-exclusive settings.
+- **📋 Task Generator**: Input a project goal, and the AI breaks it down into structured tasks.
+- **🎨 Glassmorphism UI**: A dark-themed, responsive dashboard built with Framer Motion for smooth transitions.
+  
+---
+
 ## 🛠️ Tech Stack
 
 **Frontend:** React, Vite, Framer Motion, Lucide React, CSS3.  
@@ -41,13 +52,4 @@ Built with **React.js and Vite**.
 git clone [https://github.com/your-username/team-control.git](https://github.com/your-username/team-control.git)
 cd team-control
 
----
 
-## ✨ Key Features
-
-- **🤖 AI Insights**: Powered by Google Gemini. Summarize long team discussions into bullet points and generate project tasks automatically.
-- **👥 Team Management**: Create teams, join via unique invite codes, and manage roles (Owner/Member).
-- **🔒 Secure Auth**: JWT-based authentication with OTP verification for primary and secondary emails.
-- **💬 Real-time Discussion**: Integrated team chat with user avatars and owner-exclusive settings.
-- **📋 Task Generator**: Input a project goal, and the AI breaks it down into structured tasks.
-- **🎨 Glassmorphism UI**: A dark-themed, responsive dashboard built with Framer Motion for smooth transitions.
