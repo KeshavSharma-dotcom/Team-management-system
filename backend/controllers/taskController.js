@@ -8,6 +8,8 @@ const createTask = asyncWrapper(async (req, res) => {
     const { teamId, title, description } = req.body
     
     const team = await Team.findById(teamId)
+    if (!team) return res.status(404).json({ msg: "Team not found" })
+
     const userInTeam = team.members.find(m => m.user.toString() === req.user.userId)
 
     if (!userInTeam || (userInTeam.role !== "owner" && userInTeam.role !== "sub-admin")) {
@@ -21,6 +23,7 @@ const createTask = asyncWrapper(async (req, res) => {
 const toggleTaskStatus = asyncWrapper(async (req, res) => {
     const { taskId } = req.params
     const task = await Task.findById(taskId)
+    if (!task) return res.status(404).json({ msg: "Task not found" })
     
     const team = await Team.findById(task.team)
     const isMember = team.members.some(m => m.user.toString() === req.user.userId)
@@ -35,8 +38,9 @@ const toggleTaskStatus = asyncWrapper(async (req, res) => {
 const addComment = asyncWrapper(async (req, res) => {
     const { taskId, text } = req.body
     const task = await Task.findById(taskId)
+    if (!task) return res.status(404).json({ msg: "Task not found" })
     
-    await task.comments.push({ user: req.user.userId, text })
+    task.comments.push({ user: req.user.userId, text })
     await task.save()
     res.status(200).json({ msg: "Comment added" })
 })
@@ -46,17 +50,31 @@ const suggestTasks = asyncWrapper(async (req, res) => {
     if (!goal) return res.status(400).json({ msg: "Please provide a goal" })
 
     const model = genAI.getGenerativeModel({ 
-        model: "gemini-1.5-flash",
-        generationConfig: { responseMimeType: "application/json" }
+        model: "gemini-2.5-flash", 
+        generationConfig: { 
+            responseMimeType: "application/json",
+            temperature: 0.7 
+        }
     })
 
-    const prompt = `You are a project manager. Based on the goal: "${goal}", generate 3 specific tasks. 
-    Return strictly JSON: [{"title": "task title", "description": "short description"}]`
+    const prompt = `You are a professional project manager. 
+    Analyze the following goal: "${goal}"
+    Generate exactly 3 actionable tasks.
+    Return the response as a valid JSON array of objects with "title" and "description" keys.
+    Format: [{"title": "...", "description": "..."}]`
 
-    const result = await model.generateContent(prompt)
-    const suggestedTasks = JSON.parse(result.response.text())
+    try {
+        const result = await model.generateContent(prompt)
+        const responseText = result.response.text()
+        
+        const cleanedJson = responseText.replace(/```json|```/g, "").trim()
+        const suggestedTasks = JSON.parse(cleanedJson)
 
-    res.status(200).json({ suggestions: suggestedTasks })
+        res.status(200).json({ suggestions: suggestedTasks })
+    } catch (error) {
+        console.error("Gemini API Error:", error)
+        res.status(500).json({ msg: "AI failed to generate tasks. Please try again." })
+    }
 })
 
 module.exports = {
