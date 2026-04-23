@@ -36,21 +36,18 @@ const addSecondaryEmail = asyncWrapper(async (req, res) => {
 
     const user = await User.findById(userId);
     if (user.email === email) return res.status(400).json({ msg: "This is already your primary email" });
-    if (user.secondaryEmail === email) return res.status(400).json({ msg: "Email already added" });
 
-    
-    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+    const otp = crypto.randomInt(100000, 999999).toString();
     
     user.secondaryEmail = email;
     user.secondaryOtp = otp;
     user.isSecondaryVerified = false;
     await user.save();
 
-    
     await sendEmail({
         to: email,
         subject: "Verify your secondary email",
-        text: `Your verification code is: ${otp}`
+        text: `Your TeamControl verification code is: ${otp}`
     });
 
     res.status(200).json({ msg: "Verification code sent to secondary email" });

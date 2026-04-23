@@ -6,6 +6,7 @@ import './Profile.css'
 const Profile = () => {
     const [user, setUser] = useState(null)
     const [isEditing, setIsEditing] = useState(false)
+    const [loading, setLoading] = useState(false);
     const [formData, setFormData] = useState({
         username: '',
         bio: '',
@@ -38,7 +39,8 @@ const Profile = () => {
     }
 
     const handleUpdate = async (e) => {
-        e.preventDefault()
+        e.preventDefault();
+        setLoading(true);
         try {
             const response = await fetch('http://localhost:5000/api/v1/user/update', {
                 method: 'PATCH',
@@ -47,14 +49,24 @@ const Profile = () => {
                     'Authorization': `Bearer ${token}`
                 },
                 body: JSON.stringify(formData)
-            })
+            });
+        
+            const data = await response.json();
+
             if (response.ok) {
-                setIsEditing(false)
-                fetchProfile()
-                alert("Profile Updated!")
+                setIsEditing(false); 
+                setUser(data.user); 
+                alert("Profile Updated!");
+            } else {
+                alert(data.msg || "Update failed");
             }
-        } catch (err) { alert("Update failed") }
-    }
+        } catch (err) { 
+            console.error(err);
+            alert("Server error. Please try again.");
+        } finally {
+            setLoading(false);
+        }
+    };
 
     if (!user) return <div className="loader"></div>
 
