@@ -42,6 +42,16 @@ const userSchema = mongoose.Schema({
         required: true,
         minlength: 8
     },
+    publicKey: {
+        type: String, 
+    },
+    encryptedPrivateKey: {
+        type: String, 
+    },
+    keyMetadata: {
+        iv: String, 
+        salt: String 
+    },
     role: {
         type: String,
         enum: ["admin", "member"],
@@ -56,19 +66,15 @@ const userSchema = mongoose.Schema({
             match: [/^\+?[1-9]\d{1,14}$/, "Enter a valid E.164 phone number"]
         },
         bio: { type: String, maxlength: 150 },
-        avatar: { type: String }, // URL to image
+        avatar: { type: String }, 
         location: { type: String }
     }
 }, { timestamps: true })
 
 userSchema.pre("save", async function() {
     if (!this.isModified("password")) return;
-    try {
-        const salt = await bcrypt.genSalt(Number(process.env.SALT_ROUNDS || 10))
-        this.password = await bcrypt.hash(this.password, salt)
-    } catch (err) {
-        throw err
-    }
+    const salt = await bcrypt.genSalt(10)
+    this.password = await bcrypt.hash(this.password, salt)
 })
 
 module.exports = mongoose.model("User", userSchema)

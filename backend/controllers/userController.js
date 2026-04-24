@@ -75,6 +75,19 @@ const getMe = asyncWrapper(async (req, res) => {
     res.status(200).json({ user });
 });
 
+const storeSecurityKeys = asyncWrapper(async (req, res) => {
+    const { publicKey, encryptedPrivateKey, iv, salt } = req.body
+    
+    const user = await User.findByIdAndUpdate(req.user.userId, {
+        publicKey,
+        encryptedPrivateKey,
+        "keyMetadata.iv": iv,
+        "keyMetadata.salt": salt
+    }, { new: true });
+
+    res.status(200).json({ msg: "Security keys established", hasKeys: true })
+})
+
 module.exports = {
     updateProfile,
     addSecondaryEmail,
