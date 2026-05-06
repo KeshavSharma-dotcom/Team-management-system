@@ -49,7 +49,7 @@ Built with **React.js and Vite**.
 
 ### 1. Clone the repository
 ```bash
-git clone [https://github.com/your-username/team-control.git](https://github.com/your-username/team-control.git)
+git clone [https://github.com/your-username/team-control.git](https://github.com/KeshavSharma-dotcom/Team-management-system.git)
 cd team-control
 
 
