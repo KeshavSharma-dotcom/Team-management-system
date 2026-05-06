@@ -5,9 +5,12 @@ const taskSchema = new mongoose.Schema({
     title: { type: String, required: true },
     description: String,
     isCompleted: { type: Boolean, default: false },
-    createdAt: {
+    startDate: {
         type: Date,
-        default: Date.now
+        default: Date.now 
+    },
+    dueDate: {
+        type: Date 
     },
     completedAt: {
         type: Date 
@@ -19,7 +22,20 @@ const taskSchema = new mongoose.Schema({
             type: Date,
             default: Date.now
         }
-    }]
+    }],
+    createdBy: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+    encryptionVersion: { type: String, default: "1.0" }
+},
+{ 
+    timestamps: true,
+    toJSON: { virtuals: true }, 
+    toObject: { virtuals: true }
 })
+
+taskSchema.virtual('durationInDays').get(function() {
+    if (!this.dueDate || !this.startDate) return null;
+    const diffInMs = Math.abs(this.dueDate - this.startDate);
+    return Math.ceil(diffInMs / (1000 * 60 * 60 * 24));
+});
 
 module.exports = mongoose.model("Task", taskSchema)

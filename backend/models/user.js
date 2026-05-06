@@ -15,7 +15,6 @@ const userSchema = mongoose.Schema({
         lowercase: true,
         minlength: 3
     },
-
     email: {
         type: String,
         required: true,
@@ -36,7 +35,6 @@ const userSchema = mongoose.Schema({
         type: Boolean,
         default: false
     },
-
     password: {
         type: String,
         required: true,
