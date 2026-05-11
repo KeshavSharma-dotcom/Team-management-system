@@ -1,10 +1,17 @@
 const mongoose = require("mongoose")
 
 const taskSchema = new mongoose.Schema({
-    team: { type: mongoose.Types.ObjectId, ref: "Team", required: true },
+    team: { type: mongoose.Types.ObjectId, ref: "Team", required: true, index: true },
     title: { type: String, required: true },
     description: String,
-    isCompleted: { type: Boolean, default: false },
+    status: { 
+        type: String, 
+        enum: ['To Do', 'In Progress', 'Review', 'Done'], 
+        default: 'To Do',
+        index: true
+    },
+    assignee: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+    isCompleted: { type: Boolean, default: false, index: true },
     startDate: {
         type: Date,
         default: Date.now 
@@ -23,7 +30,7 @@ const taskSchema = new mongoose.Schema({
             default: Date.now
         }
     }],
-    createdBy: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+    createdBy: { type: mongoose.Schema.Types.ObjectId, ref: "User", index: true },
     encryptionVersion: { type: String, default: "1.0" }
 },
 { 

@@ -1,66 +1,206 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
 .tasks-container {
-    max-width: 1000px;
+    max-width: 1100px;
     margin: 0 auto;
-    padding: 60px 20px;
+    padding: 40px 24px;
+    color: #f1f5f9;
+    font-family: 'Inter', sans-serif;
 }
 
 .tasks-header {
-    text-align: center;
-    margin-bottom: 50px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    margin-bottom: 40px;
 }
 
-.tasks-header h1 { font-size: 2.5rem; font-weight: 800; margin-bottom: 10px; }
+.tasks-header-icon {
+    width: 60px;
+    height: 60px;
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.2), rgba(192, 132, 252, 0.2));
+    border: 1px solid rgba(99, 102, 241, 0.3);
+    border-radius: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #818cf8;
+    flex-shrink: 0;
+}
+
+.tasks-header h1 {
+    font-size: 2rem;
+    font-weight: 800;
+    margin: 0 0 6px;
+}
+
 .tasks-header h1 span {
-    background: linear-gradient(135deg, #818cf8 0%, #c084fc 100%);
+    background: linear-gradient(135deg, #818cf8, #c084fc);
     background-clip: text;
     -webkit-text-fill-color: transparent;
 }
 
-.ai-input-section {
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    padding: 30px;
-    border-radius: 24px;
-    margin-bottom: 40px;
+.tasks-header p {
+    color: #64748b;
+    margin: 0;
+    font-size: 0.95rem;
 }
 
-.ai-input-wrapper {
+/* ── Control Panel ── */
+.ai-control-panel {
+    background: rgba(15, 23, 42, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 24px;
+    padding: 28px;
+    margin-bottom: 40px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.panel-row {
     display: flex;
     align-items: center;
-    gap: 15px;
-    background: rgba(0, 0, 0, 0.2);
-    padding: 10px;
-    border-radius: 16px;
-    border: 1px solid rgba(255, 255, 255, 0.05);
+    gap: 12px;
 }
 
-.ai-input-wrapper input {
-    flex: 1;
+.team-select-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    padding: 10px 16px;
+    border-radius: 12px;
+    color: #94a3b8;
+}
+
+.team-select-wrapper select {
     background: transparent;
     border: none;
     outline: none;
-    color: white;
-    font-size: 1.1rem;
-    padding-left: 10px;
+    color: #f1f5f9;
+    font-size: 0.9rem;
+    font-family: 'Inter', sans-serif;
+    cursor: pointer;
 }
 
-.brain-icon { color: #818cf8; margin-left: 10px; }
+.team-select-wrapper select option {
+    background: #1e293b;
+}
 
-.ai-input-wrapper button {
-    background: #6366f1;
-    color: white;
+.ai-input-row {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+}
+
+.ai-input-wrapper {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    padding: 14px 18px;
+    border-radius: 14px;
+    transition: border-color 0.2s;
+}
+
+.ai-input-wrapper:focus-within {
+    border-color: rgba(99, 102, 241, 0.5);
+}
+
+.spark-icon { color: #fbbf24; flex-shrink: 0; }
+
+.ai-input-wrapper input {
+    background: transparent;
     border: none;
-    padding: 12px 24px;
-    border-radius: 12px;
+    outline: none;
+    color: #f1f5f9;
+    width: 100%;
+    font-size: 0.95rem;
+    font-family: 'Inter', sans-serif;
+}
+
+.ai-input-wrapper input::placeholder { color: #475569; }
+
+.generate-btn {
+    padding: 14px 24px;
+    background: linear-gradient(135deg, #6366f1, #818cf8);
+    border: none;
+    border-radius: 14px;
+    color: white;
     font-weight: 700;
     cursor: pointer;
     display: flex;
     align-items: center;
     gap: 8px;
-    transition: 0.3s;
+    transition: all 0.3s;
+    white-space: nowrap;
+    box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
+    font-family: 'Inter', sans-serif;
 }
 
-.ai-input-wrapper button:hover { background: #4f46e5; transform: scale(1.02); }
+.generate-btn:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(99, 102, 241, 0.4);
+}
+
+.generate-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+
+.btn-loader-dark {
+    width: 18px;
+    height: 18px;
+    border: 2px solid rgba(255,255,255,0.3);
+    border-top-color: white;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    display: inline-block;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ── AI Thinking ── */
+.ai-thinking {
+    text-align: center;
+    padding: 40px;
+    color: #64748b;
+}
+
+.thinking-dots {
+    display: flex;
+    justify-content: center;
+    gap: 6px;
+    margin-bottom: 16px;
+}
+
+.thinking-dots span {
+    width: 10px;
+    height: 10px;
+    background: #6366f1;
+    border-radius: 50%;
+    animation: bounce 1.4s infinite;
+}
+
+.thinking-dots span:nth-child(2) { animation-delay: 0.2s; }
+.thinking-dots span:nth-child(3) { animation-delay: 0.4s; }
+
+@keyframes bounce {
+    0%, 80%, 100% { transform: scale(0.7); opacity: 0.5; }
+    40% { transform: scale(1); opacity: 1; }
+}
+
+.suggestions-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: #94a3b8;
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 20px;
+}
 
 .suggestions-grid {
     display: grid;
@@ -69,54 +209,86 @@
 }
 
 .suggestion-card {
-    background: rgba(255, 255, 255, 0.02);
+    background: rgba(30, 41, 59, 0.4);
     border: 1px solid rgba(255, 255, 255, 0.08);
-    padding: 25px;
     border-radius: 20px;
+    padding: 28px;
     position: relative;
-    overflow: hidden;
-}
-
-.suggestion-card::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; width: 4px; height: 100%;
-    background: #818cf8;
-}
-
-.card-top {
+    transition: 0.3s;
     display: flex;
-    justify-content: space-between;
-    margin-bottom: 15px;
-    color: #818cf8;
+    flex-direction: column;
+    gap: 12px;
 }
 
-.ai-badge {
-    font-size: 0.7rem;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    font-weight: 800;
-    background: rgba(129, 140, 248, 0.1);
-    padding: 4px 8px;
-    border-radius: 6px;
+.suggestion-card:hover {
+    border-color: rgba(99, 102, 241, 0.3);
+    transform: translateY(-4px);
+    box-shadow: 0 12px 40px rgba(0,0,0,0.2);
 }
 
-.suggestion-card h3 { font-size: 1.2rem; margin-bottom: 10px; }
-.suggestion-card p { color: #94a3b8; font-size: 0.9rem; line-height: 1.5; margin-bottom: 20px; }
+.suggestion-card.added {
+    border-color: rgba(34, 197, 94, 0.3);
+    background: rgba(34, 197, 94, 0.04);
+    opacity: 0.7;
+}
+
+.card-number {
+    font-size: 2.5rem;
+    font-weight: 900;
+    color: rgba(99, 102, 241, 0.15);
+    line-height: 1;
+    position: absolute;
+    top: 20px;
+    right: 24px;
+}
+
+.suggestion-card h3 {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #f1f5f9;
+    margin: 0;
+    padding-right: 40px;
+}
+
+.suggestion-card p {
+    font-size: 0.875rem;
+    color: #64748b;
+    line-height: 1.6;
+    margin: 0;
+    flex: 1;
+}
 
 .add-task-btn {
-    width: 100%;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px dashed rgba(255, 255, 255, 0.2);
-    color: white;
-    padding: 10px;
-    border-radius: 8px;
-    cursor: pointer;
     display: flex;
-    justify-content: center;
     align-items: center;
-    gap: 8px;
-    transition: 0.3s;
+    gap: 6px;
+    padding: 10px 16px;
+    background: rgba(99, 102, 241, 0.1);
+    border: 1px solid rgba(99, 102, 241, 0.2);
+    color: #818cf8;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 0.85rem;
+    transition: 0.2s;
+    align-self: flex-start;
+    font-family: 'Inter', sans-serif;
 }
 
-.add-task-btn:hover { background: rgba(99, 102, 241, 0.1); border-color: #6366f1; }
+.add-task-btn:hover:not(:disabled) {
+    background: rgba(99, 102, 241, 0.2);
+}
+
+.add-task-btn.done {
+    background: rgba(34, 197, 94, 0.1);
+    border-color: rgba(34, 197, 94, 0.3);
+    color: #22c55e;
+    cursor: default;
+}
+
+.add-task-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+
+@media (max-width: 640px) {
+    .ai-input-row { flex-direction: column; }
+    .generate-btn { width: 100%; justify-content: center; }
+}

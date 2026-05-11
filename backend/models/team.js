@@ -5,19 +5,34 @@ const teamSchema = mongoose.Schema({
         type : String,
         required : [true,"provide team name"],
         trim : true,
-        unique : true
+        unique : true,
+        index : true,
+        minlength : [6, "Team name must be at least 6 characters"],
+        maxlength : [50, "Team name cannot exceed 50 characters"]
     },
     teamCode : {
         type : String,
-        minlength : 6,
         unique : true,
-        required:[true, "provide code for security"]
+        index : true,
+        required:[true, "provide code for security"],
+        minlength : [8, "Team code must be at least 8 characters"]
     },
     status : {
         type : String,
         enum : ["public","private"],
         default : "public",
         required : true,
+    },
+    description: {
+        type: String,
+        maxlength: 500,
+        default: ""
+    },
+    tags: [{ type: String }],
+    bannerUrl: { type: String, default: "" },
+    maxMembers: {
+        type: Number,
+        default: 50
     },
     passcode:{
         type:String,
@@ -34,7 +49,7 @@ const teamSchema = mongoose.Schema({
     },
     members: [{
         _id: false,
-        user: { type: mongoose.Types.ObjectId, ref: "User", required: true },
+        user: { type: mongoose.Types.ObjectId, ref: "User", required: true, index: true },
         role: { type: String, enum: ["owner", "sub-admin", "member"], default: "member" },
         joinedAt: {
             type: Date,
@@ -45,14 +60,11 @@ const teamSchema = mongoose.Schema({
         type:Boolean,
         default:false
     },
-    discussions: [{
-        user: { type: mongoose.Types.ObjectId, ref: "User", required: true },
-        userName: String,
-        text: { type: String, required: true },
-        sentAt: {
-            type: Date,
-            default: Date.now
-        }
+    joinRequests: [{
+        _id: false,
+        user: { type: mongoose.Types.ObjectId, ref: "User", required: true, index: true },
+        status: { type: String, enum: ["pending", "approved", "rejected"], default: "pending" },
+        requestedAt: { type: Date, default: Date.now }
     }],
     createdAt: {
         type: Date,

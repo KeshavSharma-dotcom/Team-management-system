@@ -4,20 +4,18 @@ import { motion } from 'framer-motion'
 import { Users, Plus, Search, ArrowRight, ShieldCheck } from 'lucide-react'
 import './MyTeams.css'
 
+import { apiCall } from '../../utils/api'
+
 const MyTeams = () => {
     const [myTeams, setMyTeams] = useState([])
     const [loading, setLoading] = useState(true)
     const navigate = useNavigate()
-    const token = localStorage.getItem('token')
 
     useEffect(() => {
         const fetchMyTeams = async () => {
             try {
-                const response = await fetch('http://localhost:5000/api/v1/teams/my-teams', {
-                    headers: { 'Authorization': `Bearer ${token}` }
-                })
-                const data = await response.json()
-                if (response.ok) setMyTeams(data.teams)
+                const data = await apiCall('/teams/my-teams')
+                setMyTeams(data.teams)
             } catch (err) {
                 console.error(err)
             } finally {
@@ -25,7 +23,7 @@ const MyTeams = () => {
             }
         }
         fetchMyTeams()
-    }, [token])
+    }, [])
 
     return (
         <motion.div 
@@ -63,7 +61,7 @@ const MyTeams = () => {
                                 <div className="team-icon">
                                     {team.teamName.charAt(0)}
                                 </div>
-                                {team.createdBy === JSON.parse(localStorage.getItem('user')).userId && (
+                                {team.createdBy === (JSON.parse(localStorage.getItem('user'))?.userId) && (
                                     <span className="owner-badge"><ShieldCheck size={12}/> Owner</span>
                                 )}
                             </div>

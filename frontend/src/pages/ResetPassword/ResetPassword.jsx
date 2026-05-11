@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { Lock, ShieldCheck, ArrowRight, AlertCircle } from 'lucide-react'
+import toast from 'react-hot-toast'
 import './ResetPassword.css'
 
 const ResetPassword = () => {
@@ -25,7 +26,7 @@ const ResetPassword = () => {
         e.preventDefault()
         
         if (password !== confirmPassword) {
-            return alert('Passwords do not match')
+            return toast.error('Passwords do not match')
         }
 
         setLoading(true)
@@ -40,13 +41,13 @@ const ResetPassword = () => {
             const data = await response.json()
 
             if (response.ok) {
-                alert('Password updated successfully! Please login.')
+                toast.success('Password updated successfully! Please login.')
                 navigate('/login')
             } else {
-                alert(data.msg || 'Reset failed')
+                toast.error(data.msg || 'Reset failed')
             }
         } catch (error) {
-            alert('Server error')
+            toast.error('Server error')
         } finally {
             setLoading(false)
         }

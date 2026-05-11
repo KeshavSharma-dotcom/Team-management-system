@@ -1,5 +1,6 @@
 import { Routes, Route, useLocation } from 'react-router-dom'
 import { AnimatePresence } from 'framer-motion'
+import { Toaster } from 'react-hot-toast'
 
 import NavBar from './components/Navbar/NavBar.jsx'
 import ProtectedRoute from './components/ProtectedRoute/ProtectedRoute.jsx'
@@ -17,6 +18,7 @@ import TeamSettings from './pages/TeamSettings/TeamSettings.jsx'
 import Tasks from './pages/Tasks/Tasks.jsx'
 import Profile from './pages/Profile/Profile.jsx'
 import MyTeams from './pages/MyTeams/MyTeams.jsx'
+import Community from './pages/Community/Community.jsx'
 
 const App = () => {
     const location = useLocation()
@@ -26,6 +28,7 @@ const App = () => {
     return (
         <>
             {showNavBar && <NavBar />}
+            <Toaster position="top-center" />
             
             <AnimatePresence mode="wait">
                 <Routes location={location} key={location.pathname}>
@@ -44,6 +47,7 @@ const App = () => {
                     <Route path="/team/:teamId/settings" element={<ProtectedRoute><TeamSettings/></ProtectedRoute>} />
                     <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
                     <Route path="/myteams" element={<ProtectedRoute><MyTeams/></ProtectedRoute>} />
+                    <Route path="/community" element={<ProtectedRoute><Community/></ProtectedRoute>} />
 
                     <Route path="*" element={<div className="temp-page">404 - Not Found</div>} />
                 </Routes>

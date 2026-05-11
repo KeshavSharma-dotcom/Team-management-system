@@ -1,130 +1,37 @@
-const User = require("../models/user")
-const jwt = require("jsonwebtoken")
-const asyncWrapper = require("../middlewares/asyncWrapper")
-const sendEmail = require("../utils/sendEmail")
-const bcrypt = require("bcryptjs")
-const register = asyncWrapper(async (req ,res)=>{
-    const {email, password, name, role} = req.body
-    if(!email || !password || !name || !role){
-        return res.status(400).json({message: "Field Required!"})
-    }
-    const check = await User.exists({email})
-    if(check){
-        return res.status(409).json({message : "User Already Exists!"})
-    }
+const authService = require("../services/authService");
+const asyncWrapper = require("../middlewares/asyncWrapper");
+const sendResponse = require("../utils/sendResponse");
 
-    const otp = Math.floor(100000 + Math.random() * 900000).toString()
-    const user = await User.create({
-        email : email,
-        password : password,
-        name : name,
-        role : role,
-        otp : otp
-    })
-    await sendEmail({
-        to : email,
-        subject : `Account registration otp`,
-        html : `<h1>Team management</h1>
-        <p>Account creation opt : <b>${otp}</b></p>`
-    })
-    res.status(201).json({msg : `OTP sent to ${email}`})
-})
+const register = asyncWrapper(async (req, res) => {
+    const result = await authService.register(req.body);
+    sendResponse(res, 201, `OTP sent to ${result.email}`);
+});
 
-const verifyOtp = asyncWrapper(async (req,res)=>{
-    const {email,otp} = req.body
-    if(!email || !otp){
-        return res.status(400).json({msg : "Bad request"})
-    }
-    const user = await User.findOne({email})
-    if(!user){
-        return res.status(404).json({msg : "User not found!"})
-    }
-    if(user.otp !== otp){
-        return res.status(400).json({msg:"Invalid otp"})
-    }
-    user.isVerified = true
-    await user.save()
-    res.status(200).json({msg:"Registration Successfull"})
-})
+const login = asyncWrapper(async (req, res) => {
+    const result = await authService.login(req.body.email, req.body.password);
+    sendResponse(res, 200, "Login successful", result);
+});
 
-const sendOtpAgain = asyncWrapper(async (req,res)=>{
-    const {email} = req.body
-    if(!email){
-        return res.status(400).json({msg:"Bad req"})
-    }
-    const user = await User.findOne({email})
-    if(!user){
-        return res.status(404).json({msg : "User not found!"})
-    }
-    await sendEmail({
-        to : email,
-        subject : `Account registration otp`,
-        html : `<h1>Team management</h1>
-        <p>Account creation opt : <b>${user.otp}</b></p>`
-    })
-    res.status(201).json({msg : `OTP sent again to ${email}`})
-})
+const verifyOtp = asyncWrapper(async (req, res) => {
+    const { email, otp } = req.body;
+    const result = await authService.verifyOtp(email, otp);
+    sendResponse(res, 200, result.message);
+});
 
-const login = asyncWrapper(async (req,res)=>{
-    const {email,password,role} = req.body 
-    if(!email || !password){
-        return res.status(400).json({msg : "Provide both fields"})
-    }
-    const user = await User.findOne({email})
-    if(!user){
-        return res.status(404).json({msg : "User not found!"})
-    }
-    if(!user.isVerified){
-        return res.status(409).json({msg:"User not registered, please register!"})
-    }
-    const passcode = await bcrypt.compare(password, user.password)
-    if(!passcode){
-        return res.status(409).json({msg: "Wrong Password"})
-    }
-    const token = jwt.sign(
-        {userId :user._id , role : user.role, userName : user.name},
-        process.env.JWT_SECRET,
-        {expiresIn: process.env.JWT_DURATION}
-    )
-    res.status(200).json({msg : "login successfull",token,user:{name : user.name,role:user.role}})
-})
+const sendOtpAgain = asyncWrapper(async (req, res) => {
+    const result = await authService.resendOtp(req.body.email);
+    sendResponse(res, 200, `OTP resent to ${result.email}`);
+});
 
-const initiateFP = asyncWrapper(async (req,res)=>{
-    const {email} = req.body
-    if(!email){
-        return res.status(400).json({msg : "Provide field"})
-    }
-    const user = await User.findOne({email})
-    if(!user){
-        return res.status(404).json({msg : "User not found!"})
-    }
-    if(!user.isVerified){
-        return res.status(409).json({msg:"User not registered, please login!"})
-    }
-    user.otp = Math.floor(100000 + Math.random() * 900000).toString()
-    await user.save()
-    await sendEmail({
-        to:email,
-        subject : "Changing Password",
-        html :` <h1>Team Control Support</h1>
-        <p>Your OTP : <b>${user.otp}</b></p>`
-    })
-    res.status(200).json({msg:`OTP is send on ${email}`})
-})
+const initiateFP = asyncWrapper(async (req, res) => {
+    const result = await authService.initiateForgotPassword(req.body.email);
+    sendResponse(res, 200, `Reset OTP sent to ${result.email}`);
+});
 
-const resetPas = asyncWrapper(async (req,res)=>{
-    const {email, password, otp} = req.body 
-    if(!email || !password || !otp) return res.status(400).json({msg : "Provide all fields"})
-    
-    const user = await User.findOne({email})
-    if(!user || user.otp !== otp) {
-        return res.status(401).json({msg: "Invalid or expired OTP"})
-    }
-    
-    user.password = password
-    user.otp = null 
-    await user.save()
-    res.status(200).json({msg:"Password changed successfully!"})
-})
+const resetPas = asyncWrapper(async (req, res) => {
+    const { email, otp, password } = req.body;
+    const result = await authService.resetPassword(email, otp, password);
+    sendResponse(res, 200, result.message);
+});
 
-module.exports = {register, verifyOtp, sendOtpAgain, login, initiateFP, resetPas}
+module.exports = { register, verifyOtp, sendOtpAgain, login, initiateFP, resetPas };

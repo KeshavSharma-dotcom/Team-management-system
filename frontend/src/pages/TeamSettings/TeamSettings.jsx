@@ -1,56 +1,47 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Settings, Globe, Lock, EyeOff, Eye, Save, ArrowLeft } from 'lucide-react';
+import { Settings, Globe, Lock, EyeOff, Eye, Save, ArrowLeft, Trash2 } from 'lucide-react';
+import toast from 'react-hot-toast';
 import './TeamSettings.css';
+import { apiCall } from '../../utils/api'
 
 const TeamSettings = () => {
     const { teamId } = useParams();
     const navigate = useNavigate();
     const [loading, setLoading] = useState(false);
     const [formData, setFormData] = useState({
-        teamName: '',
-        status: 'public',
-        hide: false
+        teamName: '', status: 'public', hide: false, passcode: ''
     });
 
-    const token = localStorage.getItem('token');
-
     useEffect(() => {
-        const fetchCurrentSettings = async () => {
-            const response = await fetch(`http://localhost:5000/api/v1/teams/${teamId}/chat`, {
-                headers: { 'Authorization': `Bearer ${token}` }
-            });
-            const data = await response.json();
-            if (response.ok) {
+        const fetch = async () => {
+            try {
+                const data = await apiCall(`/teams/${teamId}/chat`);
+                const team = data.teamName ? data : data;
                 setFormData({
-                    teamName: data.teamName,
-                    status: data.status,
-                    hide: data.hide
+                    teamName: team.teamName || '',
+                    status: team.status || 'public',
+                    hide: team.hide || false,
+                    passcode: team.passcode || ''
                 });
-            }
+            } catch (err) { console.error(err) }
         };
-        fetchCurrentSettings();
-    }, [teamId, token]);
+        fetch();
+    }, [teamId]);
 
     const handleUpdate = async (e) => {
         e.preventDefault();
         setLoading(true);
         try {
-            const response = await fetch(`http://localhost:5000/api/v1/teams/${teamId}/settings`, {
+            await apiCall(`/teams/${teamId}/settings`, {
                 method: 'PATCH',
-                headers: { 
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
-                },
                 body: JSON.stringify(formData)
             });
-            if (response.ok) {
-                alert("Settings Updated!");
-                navigate(`/team/${teamId}`);
-            }
+            toast.success('Settings updated!');
+            navigate(`/team/${teamId}`);
         } catch (err) {
-            alert("Failed to update");
+            toast.error(err.message || 'Failed to update');
         } finally {
             setLoading(false);
         }
@@ -59,61 +50,83 @@ const TeamSettings = () => {
     return (
         <motion.div className="settings-container" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
             <div className="settings-card">
-                <button className="back-link" onClick={() => navigate(-1)}><ArrowLeft size={16}/> Back to Team</button>
+                <button className="back-link" onClick={() => navigate(-1)}>
+                    <ArrowLeft size={16} /> Back to Team
+                </button>
+
                 <div className="settings-header">
-                    <Settings className="header-icon" />
-                    <h2>Team Settings</h2>
-                    <p>Manage privacy, visibility, and team identity.</p>
+                    <div className="settings-icon-box"><Settings size={22} /></div>
+                    <div>
+                        <h2>Team Settings</h2>
+                        <p>Manage privacy, visibility, and team identity</p>
+                    </div>
                 </div>
 
-                <form onSubmit={handleUpdate}>
+                <form onSubmit={handleUpdate} className="settings-form">
                     <div className="setting-group">
                         <label>Display Name</label>
-                        <input 
-                            type="text" 
-                            value={formData.teamName} 
-                            onChange={(e) => setFormData({...formData, teamName: e.target.value})}
-                        />
+                        <div className="settings-input-wrap">
+                            <input
+                                type="text"
+                                value={formData.teamName}
+                                onChange={(e) => setFormData({ ...formData, teamName: e.target.value })}
+                                placeholder="Team name"
+                            />
+                        </div>
                     </div>
 
-                    <div className="setting-row">
-                        <div className="info">
+                    <div className="setting-block">
+                        <div className="setting-block-header">
                             <h4>Privacy Status</h4>
-                            <p>Private teams require a passcode to join.</p>
+                            <p>Private teams require owner approval for members to join.</p>
                         </div>
                         <div className="toggle-group">
-                            <button 
+                            <button
                                 type="button"
                                 className={formData.status === 'public' ? 'active' : ''}
-                                onClick={() => setFormData({...formData, status: 'public'})}
+                                onClick={() => setFormData({ ...formData, status: 'public' })}
                             >
-                                <Globe size={16}/> Public
+                                <Globe size={15} /> Public
                             </button>
-                            <button 
+                            <button
                                 type="button"
                                 className={formData.status === 'private' ? 'active' : ''}
-                                onClick={() => setFormData({...formData, status: 'private'})}
+                                onClick={() => setFormData({ ...formData, status: 'private' })}
                             >
-                                <Lock size={16}/> Private
+                                <Lock size={15} /> Private
                             </button>
                         </div>
                     </div>
 
-                    <div className="setting-row">
-                        <div className="info">
-                            <h4>Visibility</h4>
-                            <p>Hidden teams won't show in global search.</p>
+                    {formData.status === 'private' && (
+                        <div className="setting-group">
+                            <label>Team Passcode <span className="optional-badge">optional</span></label>
+                            <div className="settings-input-wrap">
+                                <input
+                                    type="text"
+                                    placeholder="Set a passcode (for direct join via code)"
+                                    value={formData.passcode}
+                                    onChange={(e) => setFormData({ ...formData, passcode: e.target.value })}
+                                />
+                            </div>
                         </div>
-                        <div 
+                    )}
+
+                    <div className="setting-block">
+                        <div className="setting-block-header">
+                            <h4>Discover Visibility</h4>
+                            <p>Hidden teams won't appear in the Explore page.</p>
+                        </div>
+                        <div
                             className={`visibility-toggle ${formData.hide ? 'is-hidden' : ''}`}
-                            onClick={() => setFormData({...formData, hide: !formData.hide})}
+                            onClick={() => setFormData({ ...formData, hide: !formData.hide })}
                         >
-                            {formData.hide ? <><EyeOff size={18}/> Hidden</> : <><Eye size={18}/> Visible</>}
+                            {formData.hide ? <><EyeOff size={16} /> Hidden</> : <><Eye size={16} /> Visible</>}
                         </div>
                     </div>
 
-                    <button className="save-settings-btn" disabled={loading}>
-                        {loading ? 'Saving...' : <><Save size={18}/> Save Changes</>}
+                    <button type="submit" className="save-settings-btn" disabled={loading}>
+                        {loading ? <span className="btn-loader" /> : <><Save size={17} /> Save Changes</>}
                     </button>
                 </form>
             </div>

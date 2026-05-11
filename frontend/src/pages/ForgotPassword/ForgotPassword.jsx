@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { Mail, Fingerprint, ArrowLeft, Send } from 'lucide-react'
+import toast from 'react-hot-toast'
 import './ForgotPassword.css'
 
 const ForgotPassword = () => {
@@ -23,13 +24,13 @@ const ForgotPassword = () => {
             const data = await response.json()
 
             if (response.ok) {
-                alert('Reset code sent to your email!')
+                toast.success('Reset code sent to your email!')
                 navigate('/verify-otp', { state: { email, type: 'reset' } })
             } else {
-                alert(data.msg || 'User not found')
+                toast.error(data.msg || 'User not found')
             }
         } catch (error) {
-            alert('Connection error. Please try again.')
+            toast.error('Connection error. Please try again.')
         } finally {
             setLoading(false)
         }

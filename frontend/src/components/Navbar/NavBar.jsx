@@ -3,7 +3,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { 
   LayoutDashboard, Users, CheckSquare, Sparkles, 
-  LogOut, Menu, X, LogIn, UserPlus, User, Shield, Mail 
+  LogOut, Menu, X, LogIn, UserPlus, User, Shield, Mail, Globe 
 } from 'lucide-react'
 import './NavBar.css'
 
@@ -54,8 +54,9 @@ const NavBar = () => {
                     {isLoggedIn ? (
                         <>
                             <li><Link to="/dashboard" className={`nav-links ${isActive('/dashboard')}`} onClick={() => setIsOpen(false)}><LayoutDashboard size={18} /> Dashboard</Link></li>
-                            <li><Link to="/myteams" className={`nav-links ${isActive('/teams')}`} onClick={() => setIsOpen(false)}><Users size={18} /> Teams</Link></li>
+                            <li><Link to="/myteams" className={`nav-links ${isActive('/myteams')}`} onClick={() => setIsOpen(false)}><Users size={18} /> Teams</Link></li>
                             <li><Link to="/tasks" className={`nav-links ${isActive('/tasks')}`} onClick={() => setIsOpen(false)}><CheckSquare size={18} /> Tasks</Link></li>
+                            <li><Link to="/community" className={`nav-links ${isActive('/community')}`} onClick={() => setIsOpen(false)}><Globe size={18} /> Community</Link></li>
                         </>
                     ) : (
                         <>
@@ -69,11 +70,11 @@ const NavBar = () => {
                     <div className="nav-actions" ref={profileRef}>
                         <div className="profile-trigger" onClick={() => setShowProfile(!showProfile)}>
                             <img 
-                                src={`https://ui-avatars.com/api/?name=${userData.name}&background=6366f1&color=fff&bold=true`} 
+                                src={`https://ui-avatars.com/api/?name=${userData?.name || 'User'}&background=${(userData?.avatarColor || '#6366f1').replace('#', '')}&color=fff&bold=true`} 
                                 alt="profile" 
                                 className="nav-avatar"
                             />
-                            <span className="user-name-desktop">{userData.name.split(' ')[0]}</span>
+                            <span className="user-name-desktop">{userData?.name?.split(' ')[0] || 'User'}</span>
                         </div>
 
                         <AnimatePresence>
@@ -86,7 +87,7 @@ const NavBar = () => {
                                 >
                                     <div className="dropdown-header">
                                         <div className="large-avatar">
-                                            <img src={`https://ui-avatars.com/api/?name=${userData.name}&background=6366f1&color=fff`} alt="avatar" />
+                                            <img src={`https://ui-avatars.com/api/?name=${userData?.name || 'User'}&background=${(userData?.avatarColor || '#6366f1').replace('#', '')}&color=fff`} alt="avatar" />
                                         </div>
                                         <div className="user-details" onClick={()=>{navigate("/profile")}}>
                                             <h4>{userData.name}</h4>

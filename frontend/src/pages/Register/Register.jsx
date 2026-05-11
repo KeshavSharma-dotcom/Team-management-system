@@ -1,99 +1,82 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import { User, Mail, Lock, Shield, ArrowRight } from 'lucide-react'
-import './Register.css'
+import { User, Mail, Lock, Shield, ArrowRight, Zap } from 'lucide-react'
+import toast from 'react-hot-toast'
+import '../Login/Login.css'
+import { apiCall } from '../../utils/api'
 
 const Register = () => {
-    const [formData, setFormData] = useState({
-        name: '',
-        email: '',
-        password: '',
-        role: 'member'
-    })
+    const [formData, setFormData] = useState({ name: '', email: '', password: '', role: 'member' })
     const [loading, setLoading] = useState(false)
     const navigate = useNavigate()
 
-    const handleChange = (e) => {
-        setFormData({ ...formData, [e.target.name]: e.target.value })
-    }
+    const handleChange = (e) => setFormData({ ...formData, [e.target.name]: e.target.value })
 
     const handleSubmit = async (e) => {
         e.preventDefault()
         setLoading(true)
-
         try {
-            const response = await fetch('http://localhost:5000/api/v1/auth/register', {
+            await apiCall('/auth/register', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(formData)
             })
-
-            const data = await response.json()
-
-            if (response.ok) {
-                alert('OTP sent to your email!')
-                navigate('/verify-otp', { state: { email: formData.email } })
-            } else {
-                alert(data.msg || 'Registration failed')
-            }
+            toast.success('OTP sent to your email!')
+            navigate('/verify-otp', { state: { email: formData.email } })
         } catch (error) {
-            alert('Server error.')
+            toast.error(error.message || 'Registration failed')
         } finally {
             setLoading(false)
         }
     }
 
     return (
-        <motion.div 
-            className="auth-page"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-        >
-            <motion.div 
+        <div className="auth-page">
+            <div className="auth-glow" />
+            <motion.div
                 className="auth-card"
-                initial={{ y: 20, opacity: 0 }}
+                initial={{ y: 30, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
-                transition={{ duration: 0.5 }}
+                transition={{ duration: 0.5, ease: 'easeOut' }}
             >
-                <h2>Create Account</h2>
-                <p className="subtitle">Join the smart team management era</p>
+                <div className="auth-brand">
+                    <div className="brand-icon"><Zap size={20} /></div>
+                    <span>TeamControl</span>
+                </div>
+                <h2>Create account</h2>
+                <p className="auth-subtitle">Join the smart team management era</p>
 
-                <form onSubmit={handleSubmit}>
+                <form onSubmit={handleSubmit} className="auth-form">
                     <div className="input-group">
-                        <User size={20} />
-                        <input type="text" name="name" placeholder="Full Name" required onChange={handleChange} />
+                        <User size={18} className="input-icon" />
+                        <input type="text" name="name" placeholder="Full name" required value={formData.name} onChange={handleChange} />
                     </div>
-
                     <div className="input-group">
-                        <Mail size={20} />
-                        <input type="email" name="email" placeholder="Email Address" required onChange={handleChange} />
+                        <Mail size={18} className="input-icon" />
+                        <input type="email" name="email" placeholder="Email address" required value={formData.email} onChange={handleChange} />
                     </div>
-
                     <div className="input-group">
-                        <Lock size={20} />
-                        <input type="password" name="password" placeholder="Password" required onChange={handleChange} />
+                        <Lock size={18} className="input-icon" />
+                        <input type="password" name="password" placeholder="Password (min 8 chars)" required value={formData.password} onChange={handleChange} />
                     </div>
-
                     <div className="input-group">
-                        <Shield size={20} />
-                        <select name="role" onChange={handleChange}>
+                        <Shield size={18} className="input-icon" />
+                        <select name="role" onChange={handleChange} value={formData.role}>
                             <option value="member">Member</option>
                             <option value="admin">Admin</option>
                         </select>
                     </div>
 
                     <button type="submit" className="auth-btn" disabled={loading}>
-                        {loading ? 'Sending OTP...' : 'Register Now'} <ArrowRight size={18} />
+                        {loading ? <span className="btn-loader" /> : <>Create Account <ArrowRight size={18} /></>}
                     </button>
                 </form>
 
                 <p className="auth-footer">
-                    Already have an account? <Link to="/login">Login</Link>
+                    Already have an account? <Link to="/login">Sign in</Link>
                 </p>
             </motion.div>
-        </motion.div>
+        </div>
     )
 }
 

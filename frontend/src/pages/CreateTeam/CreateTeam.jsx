@@ -1,82 +1,62 @@
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import { Users, Hash, Globe, Lock, Plus, ArrowLeft } from 'lucide-react'
+import { Users, Hash, Globe, Lock, Plus, ArrowLeft, Zap } from 'lucide-react'
+import toast from 'react-hot-toast'
 import './CreateTeam.css'
+import { apiCall } from '../../utils/api'
 
 const CreateTeam = () => {
-    const [formData, setFormData] = useState({
-        teamName: '',
-        teamCode: '',
-        status: 'public'
-    })
+    const [formData, setFormData] = useState({ teamName: '', teamCode: '', status: 'public' })
     const [loading, setLoading] = useState(false)
     const navigate = useNavigate()
 
-    const handleChange = (e) => {
-        setFormData({ ...formData, [e.target.name]: e.target.value })
-    }
+    const handleChange = (e) => setFormData({ ...formData, [e.target.name]: e.target.value })
 
     const handleSubmit = async (e) => {
         e.preventDefault()
         setLoading(true)
-        const token = localStorage.getItem('token')
-
         try {
-            const response = await fetch('http://localhost:5000/api/v1/teams/create', {
+            await apiCall('/teams/create', {
                 method: 'POST',
-                headers: { 
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
-                },
                 body: JSON.stringify(formData)
             })
-
-            const data = await response.json()
-
-            if (response.ok) {
-                alert('Team created successfully!')
-                navigate('/dashboard')
-            } else {
-                alert(data.msg || 'Error creating team')
-            }
+            toast.success('Team created successfully!')
+            navigate('/dashboard')
         } catch (error) {
-            alert('Server error')
+            toast.error(error.message || 'Failed to create team')
         } finally {
             setLoading(false)
         }
     }
 
     return (
-        <motion.div 
-            className="create-team-page"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-        >
+        <motion.div className="create-team-page" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
             <div className="create-card">
                 <button className="back-btn" onClick={() => navigate(-1)}>
-                    <ArrowLeft size={20} /> Back
+                    <ArrowLeft size={18} /> Back
                 </button>
 
                 <div className="create-header">
-                    <div className="icon-box">
-                        <Users size={28} />
+                    <div className="icon-box"><Users size={26} /></div>
+                    <div>
+                        <h2>Create a New Team</h2>
+                        <p>Set the foundation for your next big project</p>
                     </div>
-                    <h2>Forge a New Team</h2>
-                    <p>Set the foundation for your next big project</p>
                 </div>
 
-                <form onSubmit={handleSubmit}>
+                <form onSubmit={handleSubmit} className="create-form">
                     <div className="input-field">
                         <label>Team Name</label>
                         <div className="input-wrapper">
-                            <Users size={18} />
-                            <input 
-                                type="text" 
-                                name="teamName" 
-                                placeholder="e.g. Alpha Squad" 
-                                required 
-                                onChange={handleChange} 
+                            <Users size={17} />
+                            <input
+                                type="text"
+                                name="teamName"
+                                placeholder="e.g. Alpha Squad"
+                                required
+                                value={formData.teamName}
+                                onChange={handleChange}
                             />
                         </div>
                     </div>
@@ -84,45 +64,39 @@ const CreateTeam = () => {
                     <div className="input-field">
                         <label>Unique Team Code</label>
                         <div className="input-wrapper">
-                            <Hash size={18} />
-                            <input 
-                                type="text" 
-                                name="teamCode" 
-                                placeholder="min 6 characters" 
+                            <Hash size={17} />
+                            <input
+                                type="text"
+                                name="teamCode"
+                                placeholder="Min 6 characters — used to identify your team"
                                 minLength="6"
-                                required 
-                                onChange={handleChange} 
+                                required
+                                value={formData.teamCode}
+                                onChange={handleChange}
                             />
                         </div>
                     </div>
 
-                    <div className="status-selector">
-                        <label className={`status-option ${formData.status === 'public' ? 'selected' : ''}`}>
-                            <input 
-                                type="radio" 
-                                name="status" 
-                                value="public" 
-                                checked={formData.status === 'public'}
-                                onChange={handleChange} 
-                            />
-                            <Globe size={18} />
-                            <span>Public</span>
-                        </label>
-
-                        <label className={`status-option ${formData.status === 'private' ? 'selected' : ''}`}>
-                            <input 
-                                type="radio" 
-                                name="status" 
-                                value="private" 
-                                onChange={handleChange} 
-                            />
-                            <Lock size={18} />
-                            <span>Private</span>
-                        </label>
+                    <div className="input-field">
+                        <label>Privacy</label>
+                        <div className="status-selector">
+                            <label className={`status-option ${formData.status === 'public' ? 'selected' : ''}`}>
+                                <input type="radio" name="status" value="public" checked={formData.status === 'public'} onChange={handleChange} />
+                                <Globe size={16} />
+                                <span>Public</span>
+                                <small>Anyone can discover and join</small>
+                            </label>
+                            <label className={`status-option ${formData.status === 'private' ? 'selected' : ''}`}>
+                                <input type="radio" name="status" value="private" onChange={handleChange} />
+                                <Lock size={16} />
+                                <span>Private</span>
+                                <small>Requires your approval to join</small>
+                            </label>
+                        </div>
                     </div>
 
                     <button type="submit" className="submit-team-btn" disabled={loading}>
-                        {loading ? 'Creating...' : 'Launch Team'} <Plus size={20} />
+                        {loading ? <span className="btn-loader" /> : <><Zap size={18} /> Launch Team</>}
                     </button>
                 </form>
             </div>

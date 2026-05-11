@@ -2,7 +2,10 @@ import { useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { KeyRound, ArrowRight, RefreshCcw } from 'lucide-react'
+import toast from 'react-hot-toast'
 import './VerifyOTP.css'
+
+import { apiCall } from '../../utils/api'
 
 const VerifyOTP = () => {
     const location = useLocation()
@@ -17,24 +20,19 @@ const VerifyOTP = () => {
         setLoading(true)
 
         try {
-            const response = await fetch('http://localhost:5000/api/v1/auth/verify', {
+            await apiCall('/auth/verify', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email, otp })
             })
 
-            const data = await response.json()
-
-            if (response.ok) {
-                if (location.state?.type === 'reset') {
-                    navigate('/reset-password', { state: { email, otp } }) 
-                } else {
-                    alert('Account verified successfully!')
-                    navigate('/login')
-                }
+            if (location.state?.type === 'reset') {
+                navigate('/reset-password', { state: { email, otp } }) 
+            } else {
+                toast.success('Account verified successfully!')
+                navigate('/login')
             }
         } catch (error) {
-            alert('Connection error')
+            toast.error(error.message || 'Verification failed')
         } finally {
             setLoading(false)
         }
@@ -42,14 +40,13 @@ const VerifyOTP = () => {
 
     const handleResend = async () => {
         try {
-            const response = await fetch('http://localhost:5000/api/v1/auth/resend-otp', {
+            await apiCall('/auth/resend-otp', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email })
             })
-            if (response.ok) alert('OTP sent again!')
+            toast.success('OTP sent again!')
         } catch (error) {
-            alert('Failed to resend')
+            toast.error(error.message || 'Failed to resend')
         }
     }
 

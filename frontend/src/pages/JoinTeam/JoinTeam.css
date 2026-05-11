@@ -93,12 +93,106 @@
 
 .join-btn:hover { background: #4f46e5; }
 
+.sparkle-icon {
+    color: #fcd34d;
+    margin-bottom: 15px;
+}
+
+.recommendations {
+    margin-bottom: 40px;
+}
+
+.section-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #94a3b8;
+    font-size: 0.9rem;
+    font-weight: 600;
+    margin-bottom: 15px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.recommendation-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+}
+
+.recommend-card {
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(192, 132, 252, 0.1) 100%);
+    border: 1px solid rgba(99, 102, 241, 0.2);
+    padding: 20px;
+    border-radius: 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.recommend-card:hover {
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.15) 0%, rgba(192, 132, 252, 0.15) 100%);
+    border-color: rgba(99, 102, 241, 0.4);
+}
+
+.recommend-info h4 { margin: 0; font-size: 1.1rem; }
+.recommend-info span { font-size: 0.8rem; color: #818cf8; font-family: monospace; }
+
+.join-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 25px;
+}
+
+/* Private team card distinction */
+.join-card.private-team {
+    border-color: rgba(245, 158, 11, 0.2);
+    background: rgba(245, 158, 11, 0.02);
+}
+
+.team-type-badge {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: #818cf8;
+}
+
+.private-team .team-type-badge {
+    color: #f59e0b;
+}
+
+/* Request-to-join button style */
+.join-btn.request-btn {
+    background: rgba(245, 158, 11, 0.1);
+    border: 1px solid rgba(245, 158, 11, 0.3);
+    color: #f59e0b;
+}
+
+.join-btn.request-btn:hover {
+    background: rgba(245, 158, 11, 0.2);
+}
+
+/* Pending state */
+.join-btn.pending {
+    background: rgba(148, 163, 184, 0.1);
+    border: 1px solid rgba(148, 163, 184, 0.2);
+    color: #64748b;
+    cursor: not-allowed;
+}
+
 .private-join-footer {
     margin-top: 50px;
+    text-align: center;
     display: flex;
-    justify-content: center;
     align-items: center;
-    gap: 10px;
-    color: #94a3b8;
-    font-style: italic;
+    justify-content: center;
+    gap: 12px;
+    color: #64748b;
+    font-size: 0.9rem;
 }

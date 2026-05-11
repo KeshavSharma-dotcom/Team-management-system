@@ -13,12 +13,14 @@ const userSchema = mongoose.Schema({
         sparse: true, 
         trim: true,
         lowercase: true,
-        minlength: 3
+        minlength: [3, "Username must be at least 3 characters long"],
+        index: true
     },
     email: {
         type: String,
         required: true,
         unique: true,
+        index: true,
         match: [/^[^\s@]+@[^\s@]+\.[^\s@]+$/, "Enter a valid email"]
     },
     isVerified: {
@@ -38,7 +40,7 @@ const userSchema = mongoose.Schema({
     password: {
         type: String,
         required: true,
-        minlength: 8
+        minlength: [8, "Password must be at least 8 characters long"]
     },
     publicKey: {
         type: String, 
@@ -56,17 +58,22 @@ const userSchema = mongoose.Schema({
         default: "member"
     },
     otp: { type: String },
-    secondaryOtp: { type: String }, 
+    otpExpiresAt: { type: Date },
+    secondaryOtp: { type: String },
 
     profile: {
-        contact: {
-            type: String,
-            match: [/^\+?[1-9]\d{1,14}$/, "Enter a valid E.164 phone number"]
-        },
-        bio: { type: String, maxlength: 150 },
-        avatar: { type: String }, 
-        location: { type: String }
-    }
+        bio: { type: String, default: "" },
+        contact: { type: String, default: "" },
+        location: { type: String, default: "" },
+        skills: [{ type: String }],
+        bannerUrl: { type: String, default: "" },
+        socialLinks: {
+            github: { type: String, default: "" },
+            linkedin: { type: String, default: "" },
+            website: { type: String, default: "" }
+        }
+    },
+    avatarColor: { type: String, default: "#6366f1" }
 }, { timestamps: true })
 
 userSchema.pre("save", async function() {
