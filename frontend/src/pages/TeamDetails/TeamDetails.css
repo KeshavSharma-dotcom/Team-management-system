@@ -198,7 +198,7 @@
     font-size: 0.75rem;
     color: white;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-    letter-spacing: -0.5px;
+    letter-spacing: 0;
 }
 
 .msg-bubble {
@@ -400,4 +400,302 @@
     .overview-grid {
         grid-template-columns: 1fr;
     }
+}
+
+/* ── Header Buttons ─────────────────────── */
+.ai-summary-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 18px;
+    background: rgba(99, 102, 241, 0.12);
+    border: 1px solid rgba(99, 102, 241, 0.3);
+    color: #818cf8;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 0.875rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: 'Inter', sans-serif;
+}
+.ai-summary-btn:hover:not(:disabled) {
+    background: rgba(99, 102, 241, 0.22);
+    border-color: rgba(99, 102, 241, 0.5);
+    color: #a5b4fc;
+    transform: translateY(-1px);
+}
+.ai-summary-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+
+.settings-icon-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: #94a3b8;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+.settings-icon-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    transform: rotate(20deg);
+}
+
+.ai-spinner {
+    width: 14px;
+    height: 14px;
+    border: 2px solid rgba(129, 140, 248, 0.3);
+    border-top-color: #818cf8;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    display: inline-block;
+    flex-shrink: 0;
+}
+
+.status-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 6px;
+}
+
+/* ── Description Card ───────────────────── */
+.desc-card {
+    background: rgba(30, 41, 59, 0.35);
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    border-radius: 18px;
+    padding: 20px 24px;
+    margin-bottom: 24px;
+}
+
+.desc-card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+}
+
+.desc-card-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #94a3b8;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.desc-edit-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 14px;
+    background: rgba(99, 102, 241, 0.1);
+    border: 1px solid rgba(99, 102, 241, 0.25);
+    color: #818cf8;
+    border-radius: 8px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.2s;
+    font-family: 'Inter', sans-serif;
+}
+.desc-edit-btn:hover { background: rgba(99, 102, 241, 0.2); }
+
+.desc-action-btns {
+    display: flex;
+    gap: 8px;
+}
+
+.desc-save-btn, .desc-cancel-btn {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 6px 14px;
+    border-radius: 8px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    font-family: 'Inter', sans-serif;
+    transition: 0.2s;
+}
+.desc-save-btn {
+    background: linear-gradient(135deg, #6366f1, #818cf8);
+    color: white;
+}
+.desc-save-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+.desc-cancel-btn {
+    background: rgba(255, 255, 255, 0.06);
+    color: #94a3b8;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+}
+.desc-cancel-btn:hover { background: rgba(255, 255, 255, 0.1); color: white; }
+
+.desc-textarea {
+    width: 100%;
+    background: rgba(15, 23, 42, 0.8);
+    border: 1px solid rgba(99, 102, 241, 0.3);
+    border-radius: 12px;
+    color: #f1f5f9;
+    padding: 14px 16px;
+    font-size: 0.95rem;
+    font-family: 'Inter', sans-serif;
+    line-height: 1.6;
+    resize: vertical;
+    outline: none;
+    transition: border-color 0.2s;
+    box-sizing: border-box;
+}
+.desc-textarea:focus { border-color: rgba(99, 102, 241, 0.6); }
+.desc-textarea::placeholder { color: #475569; }
+
+.desc-text {
+    color: #cbd5e1;
+    font-size: 0.95rem;
+    line-height: 1.7;
+    margin: 0;
+}
+
+/* Discussion summary card */
+.ai-summary-card {
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.08) 0%, rgba(192, 132, 252, 0.06) 100%);
+    border: 1px solid rgba(99, 102, 241, 0.25);
+    border-radius: 18px;
+    margin-bottom: 24px;
+    overflow: hidden;
+}
+
+.ai-summary-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 20px;
+    background: rgba(99, 102, 241, 0.1);
+    border-bottom: 1px solid rgba(99, 102, 241, 0.15);
+    color: #818cf8;
+    font-weight: 700;
+    font-size: 0.9rem;
+}
+
+.ai-summary-header span { flex: 1; }
+
+.ai-dismiss-btn {
+    background: transparent;
+    border: none;
+    color: #64748b;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    padding: 2px;
+    border-radius: 4px;
+    transition: color 0.2s;
+}
+.ai-dismiss-btn:hover { color: #94a3b8; }
+
+.ai-summary-body {
+    padding: 16px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.ai-summary-line {
+    color: #cbd5e1;
+    font-size: 0.9rem;
+    line-height: 1.65;
+    margin: 0;
+    padding-left: 12px;
+    border-left: 2px solid rgba(99, 102, 241, 0.3);
+}
+
+/* ── Mini Member enhancements ───────────── */
+.mini-name {
+    display: block;
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: #f1f5f9;
+}
+.mini-role {
+    display: block;
+    font-size: 0.72rem;
+    color: #64748b;
+    text-transform: capitalize;
+    margin-top: 1px;
+}
+
+/* ── Role Manager (Members Tab) ─────────── */
+.member-card {
+    position: relative;
+}
+
+.you-tag {
+    display: inline-block;
+    font-size: 0.65rem;
+    font-weight: 700;
+    background: rgba(99, 102, 241, 0.15);
+    color: #818cf8;
+    padding: 1px 6px;
+    border-radius: 20px;
+    margin-left: 6px;
+    vertical-align: middle;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.role-manager {
+    position: relative;
+    margin-top: 12px;
+    display: flex;
+    align-items: center;
+}
+
+.role-select {
+    width: 100%;
+    appearance: none;
+    background: rgba(15, 23, 42, 0.8);
+    border: 1px solid rgba(99, 102, 241, 0.25);
+    border-radius: 8px;
+    color: #94a3b8;
+    padding: 7px 30px 7px 12px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: 'Inter', sans-serif;
+    transition: 0.2s;
+    outline: none;
+}
+.role-select:hover, .role-select:focus {
+    border-color: rgba(99, 102, 241, 0.5);
+    color: #f1f5f9;
+}
+
+.role-select-icon {
+    position: absolute;
+    right: 10px;
+    color: #64748b;
+    pointer-events: none;
+}
+
+/* ── Member card expanded ───────────────── */
+.member-info p {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #f1f5f9;
+    margin: 0 0 4px;
+}
+
+.member-role {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 0.75rem;
+    color: #64748b;
+    text-transform: capitalize;
+    font-weight: 500;
 }

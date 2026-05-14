@@ -1,4 +1,8 @@
 {
+  "scripts": {
+    "start": "node backend/server.js",
+    "dev:api": "node backend/server.js"
+  },
   "dependencies": {
     "@google/generative-ai": "^0.24.1",
     "bcryptjs": "^3.0.3",

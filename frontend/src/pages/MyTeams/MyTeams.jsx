@@ -5,17 +5,19 @@ import { Users, Plus, Search, ArrowRight, ShieldCheck } from 'lucide-react'
 import './MyTeams.css'
 
 import { apiCall } from '../../utils/api'
+import { getStoredUser } from '../../utils/session'
 
 const MyTeams = () => {
     const [myTeams, setMyTeams] = useState([])
     const [loading, setLoading] = useState(true)
     const navigate = useNavigate()
+    const currentUser = getStoredUser()
 
     useEffect(() => {
         const fetchMyTeams = async () => {
             try {
                 const data = await apiCall('/teams/my-teams')
-                setMyTeams(data.teams)
+                setMyTeams(data.teams || [])
             } catch (err) {
                 console.error(err)
             } finally {
@@ -61,7 +63,7 @@ const MyTeams = () => {
                                 <div className="team-icon">
                                     {team.teamName.charAt(0)}
                                 </div>
-                                {team.createdBy === (JSON.parse(localStorage.getItem('user'))?.userId) && (
+                                {team.createdBy === currentUser?.userId && (
                                     <span className="owner-badge"><ShieldCheck size={12}/> Owner</span>
                                 )}
                             </div>

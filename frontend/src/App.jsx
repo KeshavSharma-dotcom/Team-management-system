@@ -4,10 +4,10 @@ import { Toaster } from 'react-hot-toast'
 
 import NavBar from './components/Navbar/NavBar.jsx'
 import ProtectedRoute from './components/ProtectedRoute/ProtectedRoute.jsx'
-import Home from './pages/home/Home.jsx'
+import Home from './pages/Home/Home.jsx'
 import Register from './pages/Register/Register.jsx'
 import Login from './pages/Login/Login.jsx'
-import VerifyOTP from './pages/verifyOTP/verifyOTP.jsx'
+import VerifyOTP from './pages/VerifyOTP/VerifyOTP.jsx'
 import ForgotPassword from './pages/ForgotPassword/ForgotPassword.jsx'
 import ResetPassword from './pages/ResetPassword/ResetPassword.jsx'
 import Dashboard from './pages/Dashboard/Dashboard.jsx'
@@ -19,6 +19,7 @@ import Tasks from './pages/Tasks/Tasks.jsx'
 import Profile from './pages/Profile/Profile.jsx'
 import MyTeams from './pages/MyTeams/MyTeams.jsx'
 import Community from './pages/Community/Community.jsx'
+import ResumeChecker from './pages/ResumeChecker/ResumeChecker.jsx'
 
 const App = () => {
     const location = useLocation()
@@ -43,6 +44,7 @@ const App = () => {
                     <Route path="/create-team" element={<ProtectedRoute><CreateTeam /></ProtectedRoute>} />
                     <Route path="/join-team" element={<ProtectedRoute><JoinTeam /></ProtectedRoute>} />
                     <Route path="/tasks" element={<ProtectedRoute><Tasks/></ProtectedRoute>} />
+                    <Route path="/resume-checker" element={<ProtectedRoute><ResumeChecker /></ProtectedRoute>} />
                     <Route path="/team/:teamId" element={<ProtectedRoute><TeamDetails/></ProtectedRoute>} />
                     <Route path="/team/:teamId/settings" element={<ProtectedRoute><TeamSettings/></ProtectedRoute>} />
                     <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />

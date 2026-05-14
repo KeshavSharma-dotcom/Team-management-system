@@ -1,3 +1,6 @@
+const appConfig = require("../config/appConfig");
+const logger = require("../utils/logger");
+
 const errorHandler = (err, req, res, next) => {
     // Determine status code — prefer err.statusCode (AppError), fallback to 500
     const statusCode = err.statusCode || 500;
@@ -22,6 +25,13 @@ const errorHandler = (err, req, res, next) => {
     }
     if (err.name === 'TokenExpiredError') {
         return res.status(401).json({ success: false, message: 'Token has expired, please log in again' });
+    }
+
+    if (statusCode >= 500) {
+        logger.error(`${req.method} ${req.originalUrl} failed: ${err.name || "Error"}`);
+        if (appConfig.env === "production") {
+            message = "Something went wrong, please try again later";
+        }
     }
 
     return res.status(statusCode).json({ success: false, message });

@@ -5,6 +5,7 @@ import { Mail, Lock, ArrowRight, Zap } from 'lucide-react'
 import toast from 'react-hot-toast'
 import './Login.css'
 import { apiCall } from '../../utils/api'
+import { setSession } from '../../utils/session'
 
 const Login = () => {
     const [formData, setFormData] = useState({ email: '', password: '' })
@@ -21,8 +22,7 @@ const Login = () => {
                 method: 'POST',
                 body: JSON.stringify(formData)
             })
-            localStorage.setItem('token', data.token)
-            localStorage.setItem('user', JSON.stringify(data.user))
+            setSession({ token: data.token, user: { ...data.user, email: formData.email } })
             toast.success('Welcome back!')
             navigate('/dashboard')
         } catch (error) {

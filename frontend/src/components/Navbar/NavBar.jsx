@@ -1,11 +1,12 @@
 import React, { useState, useRef, useEffect } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
-import { 
-  LayoutDashboard, Users, CheckSquare, Sparkles, 
-  LogOut, Menu, X, LogIn, UserPlus, User, Shield, Mail, Globe 
+import {
+  LayoutDashboard, Users, CheckSquare,
+  LogOut, Menu, X, LogIn, User, Shield, Mail, Globe, FileSearch
 } from 'lucide-react'
 import './NavBar.css'
+import { clearSession, getStoredUser, getToken } from '../../utils/session'
 
 const NavBar = () => {
     const [isOpen, setIsOpen] = useState(false)
@@ -14,8 +15,8 @@ const NavBar = () => {
     const navigate = useNavigate()
     const profileRef = useRef(null)
 
-    const isLoggedIn = !!localStorage.getItem('token')
-    const userData = JSON.parse(localStorage.getItem('user')) || { name: 'Guest', email: 'Not logged in', role: 'visitor' }
+    const isLoggedIn = !!getToken()
+    const userData = getStoredUser({ name: 'Guest', email: 'Not logged in', role: 'visitor' })
 
     useEffect(() => {
         const handleClickOutside = (event) => {
@@ -28,8 +29,7 @@ const NavBar = () => {
     }, [])
 
     const handleLogout = () => {
-        localStorage.removeItem('token')
-        localStorage.removeItem('user')
+        clearSession()
         setIsOpen(false)
         setShowProfile(false)
         navigate('/login')
@@ -42,13 +42,13 @@ const NavBar = () => {
             <div className="nav-container">
                 <Link to="/" className="nav-logo">
                     <div className="logo-glow"></div>
-                    <Sparkles className="logo-icon" />
+                    <LayoutDashboard className="logo-icon" />
                     <span>Team<span>Control</span></span>
                 </Link>
 
-                <div className="mobile-icon" onClick={() => setIsOpen(!isOpen)}>
+                <button className="mobile-icon" onClick={() => setIsOpen(!isOpen)} aria-label="Toggle navigation" type="button">
                     {isOpen ? <X /> : <Menu />}
-                </div>
+                </button>
 
                 <ul className={`nav-menu ${isOpen ? 'active' : ''}`}>
                     {isLoggedIn ? (
@@ -56,12 +56,13 @@ const NavBar = () => {
                             <li><Link to="/dashboard" className={`nav-links ${isActive('/dashboard')}`} onClick={() => setIsOpen(false)}><LayoutDashboard size={18} /> Dashboard</Link></li>
                             <li><Link to="/myteams" className={`nav-links ${isActive('/myteams')}`} onClick={() => setIsOpen(false)}><Users size={18} /> Teams</Link></li>
                             <li><Link to="/tasks" className={`nav-links ${isActive('/tasks')}`} onClick={() => setIsOpen(false)}><CheckSquare size={18} /> Tasks</Link></li>
+                            <li><Link to="/resume-checker" className={`nav-links ${isActive('/resume-checker')}`} onClick={() => setIsOpen(false)}><FileSearch size={18} /> Resumes</Link></li>
                             <li><Link to="/community" className={`nav-links ${isActive('/community')}`} onClick={() => setIsOpen(false)}><Globe size={18} /> Community</Link></li>
                         </>
                     ) : (
                         <>
                             <li><Link to="/login" className={`nav-links ${isActive('/login')}`} onClick={() => setIsOpen(false)}><LogIn size={18} /> Login</Link></li>
-                            <li><Link to="/register" className="nav-links-cta" onClick={() => setIsOpen(false)}>Get Started</Link></li>
+                            <li><Link to="/register" className="nav-links-cta" onClick={() => setIsOpen(false)}>Create Account</Link></li>
                         </>
                     )}
                 </ul>

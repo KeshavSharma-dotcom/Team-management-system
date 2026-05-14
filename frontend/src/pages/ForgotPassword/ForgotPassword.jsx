@@ -4,6 +4,7 @@ import { motion } from 'framer-motion'
 import { Mail, Fingerprint, ArrowLeft, Send } from 'lucide-react'
 import toast from 'react-hot-toast'
 import './ForgotPassword.css'
+import { apiCall } from '../../utils/api'
 
 const ForgotPassword = () => {
     const [email, setEmail] = useState('')
@@ -15,22 +16,15 @@ const ForgotPassword = () => {
         setLoading(true)
 
         try {
-            const response = await fetch('http://localhost:5000/api/v1/auth/FP', {
+            await apiCall('/auth/FP', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email })
             })
 
-            const data = await response.json()
-
-            if (response.ok) {
-                toast.success('Reset code sent to your email!')
-                navigate('/verify-otp', { state: { email, type: 'reset' } })
-            } else {
-                toast.error(data.msg || 'User not found')
-            }
+            toast.success('Reset code sent to your email')
+            navigate('/verify-otp', { state: { email, type: 'reset' } })
         } catch (error) {
-            toast.error('Connection error. Please try again.')
+            toast.error(error.message || 'Unable to send reset code')
         } finally {
             setLoading(false)
         }
@@ -52,7 +46,7 @@ const ForgotPassword = () => {
                     <Fingerprint size={32} />
                 </div>
                 <h2>Lost Access?</h2>
-                <p className="subtitle">No worries! Enter your email and we'll send you a recovery code.</p>
+                <p className="subtitle">Enter your email address to receive a recovery code.</p>
 
                 <form onSubmit={handleSubmit}>
                     <div className="input-group">

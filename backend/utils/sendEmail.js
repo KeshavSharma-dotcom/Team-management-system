@@ -1,25 +1,28 @@
 const nodemailer = require("nodemailer")
+const appConfig = require("../config/appConfig")
+const logger = require("./logger")
 
 const transport = nodemailer.createTransport({
-        service:"gmail",
+        service: appConfig.email.service,
         auth:{
-            user:process.env.EMAIL_NAME,
-            pass:process.env.EMAIL_PASSWORD
+            user: appConfig.email.user,
+            pass: appConfig.email.password
         }
     })
 
-const sendEmail = async ({to,subject,html})=>{
+const sendEmail = async ({to, subject, html, text})=>{
     
     const mailOptions = {
-        from : `"Team Management Support" <${process.env.EMAIL_NAME}>`,
+        from : `"Team Management Support" <${appConfig.email.user}>`,
         to,
         subject,
-        html
+        html,
+        text
     }
     try{
-        return transport.sendMail(mailOptions)
+        return await transport.sendMail(mailOptions)
     }catch(err){
-        console.error(`Email Error : ${err}`)
+        logger.error(`Email delivery failed: ${err.code || err.name || "unknown"}`)
         throw new Error("Failed to send the Email, try again or use a different email")
     }
     

@@ -1,55 +1,137 @@
-TeamControl is a modern, full-stack collaborative platform designed to streamline team workflows using Artificial Intelligence. It goes beyond standard task tracking by using Gemini AI to summarize team discussions and generate actionable task lists from project goals.
+# TeamControl
 
-![Version](https://img.shields.io/badge/version-1.0.0-blue)
-![License](https://img.shields.io/badge/license-MIT-green)
-![MERN](https://img.shields.io/badge/stack-MERN-purple)
+TeamControl is a team workspace application for managing teams, tasks, discussions, profiles, and resume checks.
 
----
+## Project Structure
 
-## 📂 Project Structure
+```text
+backend/
+  config/          Runtime configuration and database connection
+  controllers/     HTTP request handlers
+  middlewares/     Auth, validation, 404, and error handling
+  models/          Mongoose schemas
+  routes/          Versioned API routes
+  services/        Business logic and integrations
+  utils/           Logging, email, response, and error helpers
 
-### Backend (`/backend`)
-Built with **Node.js, Express, and MongoDB**.
-* `controllers/`: Logic for Auth, Teams, Tasks, and User Profiles.
-* `models/`: Mongoose schemas for Users, Teams, and Tasks.
-* `routes/`: API endpoint definitions (V1).
-* `middlewares/`: Error handling, 404s, and JWT Authentication guards.
-* `utils/`: Helper functions like Email Service (Nodemailer).
+frontend/
+  src/components/  Shared UI components
+  src/pages/       Route-level screens
+  src/utils/       API, session, and formatting helpers
 
-### Frontend (`/frontend`)
-Built with **React.js and Vite**.
-* `components/`: Reusable UI elements like NavBar and ProtectedRoute.
-* `pages/`: Core views (Dashboard, TeamDetails, Profile, JoinTeam, etc.).
-* `styles/`: Modular CSS files for high-fidelity Glassmorphism design.
+ai-service/
+  app.py           Resume analysis API
+  requirements.txt Python dependencies
 
----
+docs/
+  resume-checker.md Resume checker workflow
+```
 
-## ✨ Key Features
+## Runtime Overview
 
-- **🤖 AI Insights**: Powered by Google Gemini. Summarize long team discussions into bullet points and generate project tasks automatically.
-- **👥 Team Management**: Create teams, join via unique invite codes, and manage roles (Owner/Member).
-- **🔒 Secure Auth**: JWT-based authentication with OTP verification for primary and secondary emails.
-- **💬 Real-time Discussion**: Integrated team chat with user avatars and owner-exclusive settings.
-- **📋 Task Generator**: Input a project goal, and the AI breaks it down into structured tasks.
-- **🎨 Glassmorphism UI**: A dark-themed, responsive dashboard built with Framer Motion for smooth transitions.
-  
----
+- React/Vite serves the browser app.
+- Express exposes the `/api/v1` API.
+- MongoDB stores users, teams, tasks, messages, and resume analysis results.
+- The resume analysis service runs separately and receives resume text or PDF content from Express.
+- Gemini is used for discussion summaries and task suggestions.
 
-## 🛠️ Tech Stack
+## Main Workflows
 
-**Frontend:** React, Vite, Framer Motion, Lucide React, CSS3.  
-**Backend:** Node.js, Express.js.  
-**Database:** MongoDB (Mongoose ODM).  
-**AI:** Google Generative AI (Gemini 1.5 Flash).  
-**Auth:** JSON Web Tokens (JWT), Bcrypt.js.
+### Authentication
 
----
+Users register with email and password, verify an OTP, then sign in. The frontend stores the session token and user summary through `frontend/src/utils/session.js`.
 
-## 🚀 Getting Started
+### Teams
 
-### 1. Clone the repository
+Users can create teams, join public teams by code, request access to private teams, and manage members based on team role.
+
+### Tasks
+
+Team members can view task boards. Owners and sub-admins can create tasks, and team members can update task status and assignment.
+
+### Discussions
+
+Team members can post messages. The team detail page can request a short discussion summary.
+
+### Resume Checker
+
+The browser submits resume text or a PDF to Express. Express creates an authenticated job, calls the resume analysis service, stores the result in MongoDB, and the browser polls for completion.
+
+## Local Setup
+
+Install Node dependencies from the repository root and frontend directory if they are not already installed:
+
 ```bash
-git clone [https://github.com/your-username/team-control.git](https://github.com/KeshavSharma-dotcom/Team-management-system.git)
-cd team-control
+npm install
+cd frontend
+npm install
+```
 
+Run the Express API from the repository root:
 
+```bash
+npm run dev:api
+```
+
+Run the frontend:
+
+```bash
+cd frontend
+npm run dev
+```
+
+Run the resume analysis service:
+
+```bash
+cd ai-service
+python -m venv .venv
+.venv\Scripts\activate
+pip install -r requirements.txt
+uvicorn app:app --reload --port 8000
+```
+
+## Configuration
+
+The application reads configuration from environment variables. Do not commit environment files.
+
+Common variables:
+
+```text
+PORT
+MONGO_URL
+JWT_SECRET
+JWT_DURATION
+ALLOWED_ORIGIN
+EMAIL_SERVICE
+EMAIL_NAME
+EMAIL_PASSWORD
+API_KEY
+RESUME_ANALYSIS_SERVICE_URL
+RESUME_ANALYSIS_TIMEOUT_MS
+JSON_LIMIT
+```
+
+Frontend API URL:
+
+```text
+VITE_API_BASE_URL
+```
+
+If `VITE_API_BASE_URL` is not set, the frontend uses `http://localhost:5000/api/v1`.
+
+## API Route Groups
+
+```text
+/api/v1/auth
+/api/v1/teams
+/api/v1/tasks
+/api/v1/user
+/api/v1/resume
+/api/health
+```
+
+## Notes
+
+- Do not store resumes or environment secrets in source control.
+- Resume PDF content is kept in process memory only while the job is running.
+- The resume checker currently uses polling. A Socket.io completion hook exists in the backend service for a later push-based flow.

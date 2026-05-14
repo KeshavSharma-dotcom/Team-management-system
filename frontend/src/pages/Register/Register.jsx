@@ -44,7 +44,7 @@ const Register = () => {
                     <span>TeamControl</span>
                 </div>
                 <h2>Create account</h2>
-                <p className="auth-subtitle">Join the smart team management era</p>
+                <p className="auth-subtitle">Create an account for team workspaces</p>
 
                 <form onSubmit={handleSubmit} className="auth-form">
                     <div className="input-group">

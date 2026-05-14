@@ -66,17 +66,34 @@ const Profile = () => {
     };
 
     const handleAddEmail = async () => {
-        // Mock API call for adding email
-        toast.success("Verification OTP sent to " + secondaryEmail)
-        setShowAddModal(false)
-        setShowVerifyModal(true)
+        if (!secondaryEmail.trim()) return toast.error('Please enter an email address')
+        try {
+            await apiCall('/user/add-secondary-email', {
+                method: 'POST',
+                body: JSON.stringify({ email: secondaryEmail })
+            })
+            toast.success('Verification OTP sent to ' + secondaryEmail)
+            setShowAddModal(false)
+            setShowVerifyModal(true)
+        } catch (err) {
+            toast.error(err.message || 'Failed to send OTP')
+        }
     }
 
     const handleVerifyEmail = async () => {
-        // Mock API call for verification
-        toast.success("Email verified successfully")
-        setUser({...user, secondaryEmail: secondaryEmail || user.secondaryEmail, isSecondaryVerified: true})
-        setShowVerifyModal(false)
+        if (!otp.trim()) return toast.error('Please enter the OTP')
+        try {
+            await apiCall('/user/verify-secondary-email', {
+                method: 'POST',
+                body: JSON.stringify({ otp })
+            })
+            toast.success('Email verified successfully')
+            setUser({...user, secondaryEmail: secondaryEmail || user.secondaryEmail, isSecondaryVerified: true})
+            setShowVerifyModal(false)
+            setOtp('')
+        } catch (err) {
+            toast.error(err.message || 'Invalid OTP')
+        }
     }
 
     if (!user) return <div className="loader"></div>

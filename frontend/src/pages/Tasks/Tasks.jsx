@@ -43,10 +43,10 @@ const Tasks = () => {
             if (Array.isArray(taskList)) {
                 setSuggestions(taskList)
             } else {
-                toast.error('AI returned an unexpected format. Try again!')
+                toast.error('Task suggestions returned an unexpected format. Try again.')
             }
         } catch (err) {
-            toast.error(err.message || 'Failed to connect to AI service')
+            toast.error(err.message || 'Failed to generate task suggestions')
         } finally {
             setLoading(false)
         }
@@ -74,8 +74,8 @@ const Tasks = () => {
             <header className="tasks-header">
                 <div className="tasks-header-icon"><BrainCircuit size={28} /></div>
                 <div>
-                    <h1>AI Task <span>Generator</span></h1>
-                    <p>Describe your goal and let Gemini AI break it into actionable tasks.</p>
+                    <h1>Task <span>Suggestions</span></h1>
+                    <p>Describe a project goal and generate a short task list for review.</p>
                 </div>
             </header>
 
@@ -111,7 +111,7 @@ const Tasks = () => {
             {loading && (
                 <div className="ai-thinking">
                     <div className="thinking-dots"><span /><span /><span /></div>
-                    <p>Gemini is analyzing your goal...</p>
+                    <p>Reviewing the project goal...</p>
                 </div>
             )}
 
@@ -119,7 +119,7 @@ const Tasks = () => {
                 <div className="suggestions-section">
                     <div className="suggestions-header">
                         <ListTodo size={18} />
-                        <h3>{suggestions.length} AI-Generated Tasks</h3>
+                        <h3>{suggestions.length} Suggested Tasks</h3>
                     </div>
                     <div className="suggestions-grid">
                         {suggestions.map((task, index) => {

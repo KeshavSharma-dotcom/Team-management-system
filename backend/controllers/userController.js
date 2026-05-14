@@ -1,19 +1,20 @@
 const userService = require("../services/userService");
 const asyncWrapper = require("../middlewares/asyncWrapper");
+const sendResponse = require("../utils/sendResponse");
 
 const updateProfile = asyncWrapper(async (req, res) => {
     const user = await userService.updateProfile(req.user.userId, req.body);
-    res.status(200).json({ msg: "Profile updated successfully", user });
+    sendResponse(res, 200, "Profile updated successfully", { user });
 });
 
 const getMe = asyncWrapper(async (req, res) => {
     const user = await userService.getMe(req.user.userId);
-    res.status(200).json({ user });
+    sendResponse(res, 200, "User retrieved", { user });
 });
 
 const storeSecurityKeys = asyncWrapper(async (req, res) => {
     const user = await userService.storeSecurityKeys(req.user.userId, req.body);
-    res.status(200).json({ msg: "Security keys established", hasKeys: true });
+    sendResponse(res, 200, "Security keys established", { hasKeys: true });
 });
 
 // Other controllers kept for compatibility
@@ -24,23 +25,23 @@ const sendEmail = require("../utils/sendEmail");
 const addSecondaryEmail = asyncWrapper(async (req, res) => {
     const { email } = req.body;
     const user = await User.findById(req.user.userId);
-    if (user.email === email) return res.status(400).json({ msg: "This is already your primary email" });
+    if (user.email === email) return sendResponse(res, 400, "This is already your primary email");
     const otp = crypto.randomInt(100000, 999999).toString();
     user.secondaryEmail = email;
     user.secondaryOtp = otp;
     user.isSecondaryVerified = false;
     await user.save();
     await sendEmail({ to: email, subject: "Verify your secondary email", text: `Code: ${otp}` });
-    res.status(200).json({ msg: "Verification code sent" });
+    sendResponse(res, 200, "Verification code sent");
 });
 
 const verifySecondaryEmail = asyncWrapper(async (req, res) => {
     const user = await User.findById(req.user.userId);
-    if (!user.secondaryOtp || user.secondaryOtp !== req.body.otp) return res.status(400).json({ msg: "Invalid code" });
+    if (!user.secondaryOtp || user.secondaryOtp !== req.body.otp) return sendResponse(res, 400, "Invalid code");
     user.isSecondaryVerified = true;
     user.secondaryOtp = undefined; 
     await user.save();
-    res.status(200).json({ msg: "Secondary email verified" });
+    sendResponse(res, 200, "Secondary email verified");
 });
 
 module.exports = {

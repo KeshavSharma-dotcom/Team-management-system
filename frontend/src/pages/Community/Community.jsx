@@ -21,12 +21,10 @@ const Community = () => {
         setLoading(true);
         try {
             const data = await apiCall(`/teams/all?page=${page}&limit=12`);
-            if (data.teams) {
-                if (page === 1) setTeams(data.teams);
-                else setTeams(prev => [...prev, ...data.teams]);
-                
-                if (data.teams.length < 12) setHasMore(false);
-            }
+            const teamList = data.teams || [];
+            if (page === 1) setTeams(teamList);
+            else setTeams(prev => [...prev, ...teamList]);
+            if (teamList.length < 12) setHasMore(false);
         } catch (err) {
             console.error("Failed to fetch public teams:", err);
         } finally {

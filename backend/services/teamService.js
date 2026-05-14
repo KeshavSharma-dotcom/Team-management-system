@@ -4,13 +4,11 @@ const { GoogleGenerativeAI } = require("@google/generative-ai");
 const AppError = require("../utils/AppError");
 
 class TeamService {
-    constructor() {
-        this.genAI = new GoogleGenerativeAI(process.env.API_KEY);
-    }
 
     async getAllPublicTeams(page = 1, limit = 12) {
         const skip = (page - 1) * limit;
-        return await Team.find({ hide: false })
+        return await Team.find({ hide: false, status: "public" })
+            .populate("createdBy", "name")
             .sort("-createdAt")
             .skip(skip)
             .limit(limit);
@@ -81,11 +79,17 @@ class TeamService {
         if (!team) throw new AppError("Team not found", 404);
         if (team.createdBy.toString() !== userId) throw new AppError("Only the owner can update settings", 403);
 
-        const { teamName, status, hide, passcode } = settings;
+        const { teamName, description, status, hide, passcode } = settings;
         if (teamName) team.teamName = teamName;
+        if (typeof description !== 'undefined') team.description = description;
         if (status) team.status = status;
-        if (typeof hide !== "undefined") team.hide = hide;
-        if (passcode !== undefined) team.passcode = passcode;
+        if (typeof hide !== 'undefined') team.hide = hide;
+        // Only update passcode when a non-empty value is provided.
+        // An empty string means "leave unchanged" — prevents Mongoose minlength error.
+        if (passcode && passcode.trim().length > 0) {
+            if (passcode.trim().length < 8) throw new AppError("Passcode must be at least 8 characters", 400);
+            team.passcode = passcode.trim();
+        }
 
         await team.save();
         return team;
@@ -112,10 +116,6 @@ class TeamService {
         if (!isMember) throw new AppError("You must be a member to send messages", 403);
 
         await Message.create({ team: teamId, user: userId, userName, text });
-
-        return await Message.find({ team: teamId })
-            .populate("user", "name avatarColor")
-            .sort("sentAt");
     }
 
     async summarizeDiscussion(teamId) {
@@ -123,10 +123,11 @@ class TeamService {
         if (!team) throw new AppError("Team not found", 404);
 
         const messages = await Message.find({ team: teamId }).sort("-sentAt").limit(20);
-        if (messages.length === 0) throw new AppError("No messages to summarize", 400);
+        if (messages.length === 0) throw new AppError("No messages to summarize yet — start the conversation first!", 400);
 
         const messagesText = messages.reverse().map(m => m.text).join("\n");
-        const model = this.genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+        const genAI = new GoogleGenerativeAI(process.env.API_KEY);
+        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
         const prompt = `Summarize the following team discussion into 3 short bullet points:\n${messagesText}`;
 
         const result = await model.generateContent(prompt);
@@ -155,7 +156,7 @@ class TeamService {
         if (!team) throw new AppError("Team not found", 404);
 
         const isAdmin = team.members.some(
-            m => m.user.toString() === requesterId && ["owner", "sub-admin"].includes(m.role)
+            m => String(m.user) === requesterId && ["owner", "sub-admin"].includes(m.role)
         );
         if (!isAdmin) throw new AppError("Access denied", 403);
 

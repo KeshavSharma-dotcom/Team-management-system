@@ -4,6 +4,7 @@ import { motion } from 'framer-motion'
 import { Lock, ShieldCheck, ArrowRight, AlertCircle } from 'lucide-react'
 import toast from 'react-hot-toast'
 import './ResetPassword.css'
+import { apiCall } from '../../utils/api'
 
 const ResetPassword = () => {
     const location = useLocation()
@@ -32,22 +33,15 @@ const ResetPassword = () => {
         setLoading(true)
 
         try {
-            const response = await fetch('http://localhost:5000/api/v1/auth/RP', {
+            await apiCall('/auth/RP', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email, otp, password })
             })
 
-            const data = await response.json()
-
-            if (response.ok) {
-                toast.success('Password updated successfully! Please login.')
-                navigate('/login')
-            } else {
-                toast.error(data.msg || 'Reset failed')
-            }
+            toast.success('Password updated. Please sign in.')
+            navigate('/login')
         } catch (error) {
-            toast.error('Server error')
+            toast.error(error.message || 'Reset failed')
         } finally {
             setLoading(false)
         }

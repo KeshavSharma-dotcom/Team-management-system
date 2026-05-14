@@ -20,7 +20,7 @@ const JoinTeam = () => {
     const fetchPublicTeams = async () => {
         try {
             const data = await apiCall('/teams/all')
-            setAllTeams(data.teams)
+            setAllTeams(data.teams || [])
         } catch (error) {
             console.error('Fetch error:', error)
         } finally {
@@ -38,7 +38,7 @@ const JoinTeam = () => {
                     method: 'POST',
                     body: JSON.stringify({ teamCode: team.teamCode })
                 })
-                toast.success(data.msg || 'Joined team!')
+                toast.success(data.message || 'Joined team!')
                 navigate('/dashboard')
             } catch (error) {
                 toast.error(error.message || 'Failed to join')
@@ -47,7 +47,7 @@ const JoinTeam = () => {
             // Private team: send a join request
             try {
                 const data = await apiCall(`/teams/${team._id}/request-join`, { method: 'POST' })
-                toast.success(data.msg)
+                toast.success(data.message || 'Join request sent!')
                 setRequestedTeams(prev => new Set([...prev, team._id]))
             } catch (error) {
                 toast.error(error.message || 'Failed to send request')

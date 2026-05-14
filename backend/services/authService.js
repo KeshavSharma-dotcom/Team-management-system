@@ -34,7 +34,6 @@ class AuthService {
     async verifyOtp(email, otp) {
         const user = await User.findOne({ email });
         if (!user) throw new AppError("User not found", 404);
-        if (user.isVerified) throw new AppError("Account is already verified", 400);
         if (user.otp !== otp) throw new AppError("Invalid OTP", 400);
         if (!user.otpExpiresAt || user.otpExpiresAt < Date.now()) {
             throw new AppError("OTP has expired. Please request a new one.", 400);
@@ -105,14 +104,10 @@ class AuthService {
     async resetPassword(email, otp, newPassword) {
         const user = await User.findOne({ email });
         if (!user) throw new AppError("User not found", 404);
-        if (user.otp !== otp) throw new AppError("Invalid OTP", 400);
-        if (!user.otpExpiresAt || user.otpExpiresAt < Date.now()) {
-            throw new AppError("OTP has expired. Please request a new one.", 400);
+        if(!user.isVerified){
+            AppError("User not verified",400)
         }
-
         user.password = newPassword;
-        user.otp = undefined;
-        user.otpExpiresAt = undefined;
         await user.save();
         return { message: "Password reset successfully" };
     }

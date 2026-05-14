@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Settings, Globe, Lock, EyeOff, Eye, Save, ArrowLeft, Trash2 } from 'lucide-react';
+import { Settings, Globe, Lock, EyeOff, Eye, Save, ArrowLeft } from 'lucide-react';
 import toast from 'react-hot-toast';
 import './TeamSettings.css';
 import { apiCall } from '../../utils/api'
@@ -11,32 +11,45 @@ const TeamSettings = () => {
     const navigate = useNavigate();
     const [loading, setLoading] = useState(false);
     const [formData, setFormData] = useState({
-        teamName: '', status: 'public', hide: false, passcode: ''
+        teamName: '', description: '', status: 'public', hide: false, passcode: ''
     });
 
     useEffect(() => {
-        const fetch = async () => {
+        const fetchTeam = async () => {
             try {
                 const data = await apiCall(`/teams/${teamId}/chat`);
-                const team = data.teamName ? data : data;
                 setFormData({
-                    teamName: team.teamName || '',
-                    status: team.status || 'public',
-                    hide: team.hide || false,
-                    passcode: team.passcode || ''
+                    teamName: data.teamName || '',
+                    description: data.description || '',
+                    status: data.status || 'public',
+                    hide: data.hide || false,
+                    passcode: data.passcode || ''
                 });
             } catch (err) { console.error(err) }
         };
-        fetch();
+        fetchTeam();
     }, [teamId]);
 
     const handleUpdate = async (e) => {
         e.preventDefault();
+        if (!formData.teamName.trim()) return toast.error('Team name cannot be empty');
+
         setLoading(true);
         try {
+            // Omit blank passcodes so validation only runs when the owner enters a value.
+            const payload = {
+                teamName: formData.teamName.trim(),
+                description: formData.description,
+                status: formData.status,
+                hide: formData.hide,
+            };
+            if (formData.passcode && formData.passcode.trim().length > 0) {
+                payload.passcode = formData.passcode.trim();
+            }
+
             await apiCall(`/teams/${teamId}/settings`, {
                 method: 'PATCH',
-                body: JSON.stringify(formData)
+                body: JSON.stringify(payload)
             });
             toast.success('Settings updated!');
             navigate(`/team/${teamId}`);
@@ -71,6 +84,20 @@ const TeamSettings = () => {
                                 value={formData.teamName}
                                 onChange={(e) => setFormData({ ...formData, teamName: e.target.value })}
                                 placeholder="Team name"
+                                required
+                            />
+                        </div>
+                    </div>
+
+                    <div className="setting-group">
+                        <label>Description <span className="optional-badge">optional</span></label>
+                        <div className="settings-input-wrap">
+                            <textarea
+                                className="settings-textarea"
+                                value={formData.description}
+                                onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                                placeholder="What is this team about? Goals, topics, focus area..."
+                                rows={3}
                             />
                         </div>
                     </div>
@@ -100,15 +127,22 @@ const TeamSettings = () => {
 
                     {formData.status === 'private' && (
                         <div className="setting-group">
-                            <label>Team Passcode <span className="optional-badge">optional</span></label>
+                            <label>
+                                Team Passcode <span className="optional-badge">optional · min 8 chars</span>
+                            </label>
                             <div className="settings-input-wrap">
                                 <input
                                     type="text"
-                                    placeholder="Set a passcode (for direct join via code)"
+                                    placeholder="Leave blank to keep existing passcode"
                                     value={formData.passcode}
                                     onChange={(e) => setFormData({ ...formData, passcode: e.target.value })}
+                                    minLength={formData.passcode ? 8 : undefined}
                                 />
                             </div>
+                            <p className="setting-hint">
+                                Members with this code can join directly without approval.
+                                Leave blank to keep the current passcode unchanged.
+                            </p>
                         </div>
                     )}
 

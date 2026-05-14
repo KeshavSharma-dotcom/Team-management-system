@@ -233,3 +233,26 @@
     display: inline-block;
 }
 @keyframes spin { to { transform: rotate(360deg); } }
+
+.settings-textarea {
+    width: 100%;
+    background: transparent;
+    border: none;
+    outline: none;
+    color: #f1f5f9;
+    padding: 14px 18px;
+    font-size: 0.95rem;
+    font-family: 'Inter', sans-serif;
+    box-sizing: border-box;
+    resize: vertical;
+    line-height: 1.6;
+    min-height: 80px;
+}
+.settings-textarea::placeholder { color: #475569; }
+
+.setting-hint {
+    font-size: 0.78rem;
+    color: #64748b;
+    margin: 4px 0 0 2px;
+    line-height: 1.5;
+}

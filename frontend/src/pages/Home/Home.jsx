@@ -1,16 +1,17 @@
 import { Link, useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import { BrainCircuit, Target, Users, Zap, ShieldCheck } from 'lucide-react'
+import { ListChecks, Target, Users, ShieldCheck } from 'lucide-react'
 import './Home.css'
 import { useEffect } from 'react'
+import { getToken } from '../../utils/session'
 
 const Home = () => {
   const navigate = useNavigate()
   
   useEffect(()=>{
-    const token = localStorage.getItem("token")
+    const token = getToken()
     if(token){
-      navigate("dashboard")
+      navigate("/dashboard")
     }
   },[navigate])
   const staggerContainer = {
@@ -35,18 +36,6 @@ const Home = () => {
     }
   }
 
-  const pulse = {
-    hidden: { scale: 1 },
-    visible: {
-        scale: [1, 1.03, 1],
-        transition: {
-            duration: 1.5,
-            repeat: Infinity,
-            repeatType: 'loop'
-        }
-    }
-  }
-
   return (
     <div className="home-container">
       <motion.section 
@@ -61,7 +50,7 @@ const Home = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3, duration: 0.8 }}
           >
-            The Future of Teamwork is <span>Smart.</span>
+            Team work, tasks, and decisions in one place.
           </motion.h1>
           
           <motion.p
@@ -69,15 +58,12 @@ const Home = () => {
             animate={{ opacity: 1 }}
             transition={{ delay: 0.6, duration: 1 }}
           >
-            Effortless collaboration. AI-powered focus. TeamControl makes managing people, tasks, and discussions simpler for the modern era.
+            Coordinate teams, track work, discuss decisions, and keep project context visible.
           </motion.p>
           
-          <motion.div 
-            className="hero-actions"
-            variants={pulse}
-          >
+          <motion.div className="hero-actions">
             <Link to="/register" className="cta-btn main-cta">
-              Get Started for Free <Zap size={18} className="zap-icon" />
+              Create Account
             </Link>
           </motion.div>
         </div>
@@ -92,27 +78,27 @@ const Home = () => {
       >
         <div className="qualities-grid">
           <motion.div className="quality-card" variants={fadeInUp}>
-            <BrainCircuit size={40} className="quality-icon" />
-            <h3>AI-Assisted</h3>
-            <p>Don't brainstorm alone. Let Gemini AI suggest specific tasks based on your project goals.</p>
+            <ListChecks size={40} className="quality-icon" />
+            <h3>Task Planning</h3>
+            <p>Turn project goals into task lists your team can review, assign, and track.</p>
           </motion.div>
 
           <motion.div className="quality-card" variants={fadeInUp}>
             <Users size={40} className="quality-icon" />
-            <h3>Flexible Teams</h3>
-            <p>Create public groups or keep things secret with locked teams needing passcodes.</p>
+            <h3>Team Access</h3>
+            <p>Create open teams, private teams, and approval flows for new members.</p>
           </motion.div>
           
           <motion.div className="quality-card" variants={fadeInUp}>
             <ShieldCheck size={40} className="quality-icon" />
-            <h3>Total Control</h3>
-            <p>Owners can set specific permissions, promoting members to Sub-admins for moderation.</p>
+            <h3>Clear Roles</h3>
+            <p>Owners can assign responsibilities and keep membership changes visible.</p>
           </motion.div>
           
           <motion.div className="quality-card" variants={fadeInUp}>
             <Target size={40} className="quality-icon" />
-            <h3>Real Clarity</h3>
-            <p>See exactly who is in which team, who is working on what task, and when things get done.</p>
+            <h3>Work Visibility</h3>
+            <p>See team membership, task status, discussion history, and progress in one workflow.</p>
           </motion.div>
         </div>
       </motion.section>
@@ -125,10 +111,10 @@ const Home = () => {
         viewport={{ once: true }}
       >
         <div className="cta-box">
-          <h2>Stop managing chaos. Start managing flow.</h2>
-          <p>Register now to unlock the potential of intelligent team control. Secure, modern, and built for you.</p>
+          <h2>Start with a shared workspace.</h2>
+          <p>Create a team, invite members, and keep project work organized from the first day.</p>
           <Link to="/register" className="cta-btn final-cta">
-            Register to Get Started
+            Create Account
           </Link>
         </div>
       </motion.section>

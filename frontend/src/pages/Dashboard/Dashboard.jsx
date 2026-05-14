@@ -1,10 +1,11 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import { Plus, Users, ArrowRight, LayoutGrid, Activity } from 'lucide-react'
+import { Plus, ArrowRight, LayoutGrid } from 'lucide-react'
 import './Dashboard.css'
 
 import { apiCall } from '../../utils/api'
+import { getStoredUser } from '../../utils/session'
 
 const Dashboard = () => {
     const [teams, setTeams] = useState([])
@@ -12,7 +13,7 @@ const Dashboard = () => {
     const [loading, setLoading] = useState(true)
     const navigate = useNavigate()
     
-    const user = JSON.parse(localStorage.getItem('user')) || { name: 'User' }
+    const user = getStoredUser({ name: 'User' })
 
     useEffect(() => {
         fetchTeams()
@@ -21,7 +22,7 @@ const Dashboard = () => {
     const fetchTeams = async () => {
         try {
             const data = await apiCall('/teams/my-teams')
-            setTeams(data.teams)
+            setTeams(data.teams || [])
         } catch (error) {
             console.error('Error fetching teams:', error)
         } finally {
@@ -35,13 +36,13 @@ const Dashboard = () => {
     )
 
     const myManagedTeams = filteredTeams.filter(team => {
-        const member = team.members?.find(m => m.user._id === user.userId || m.user === user.userId);
+        const member = team.members?.find(m => (m.user?._id || m.user)?.toString() === user.userId?.toString());
         return member && (member.role === 'owner' || member.role === 'sub-admin');
     });
 
     const myJoinedTeams = filteredTeams.filter(team => {
-        const member = team.members?.find(m => m.user._id === user.userId || m.user === user.userId);
-        return !member || member.role === 'member'; // fallback to member if not explicitly found
+        const member = team.members?.find(m => (m.user?._id || m.user)?.toString() === user.userId?.toString());
+        return !member || member.role === 'member';
     });
 
     const renderTeamCard = (team, role) => (
@@ -121,7 +122,10 @@ const Dashboard = () => {
                             <div style={{marginBottom: '40px'}}>
                                 <h3 style={{color: '#94a3b8', fontSize: '1rem', marginBottom: '15px'}}>Teams You Manage</h3>
                                 <div className="teams-grid">
-                                    {myManagedTeams.map(team => renderTeamCard(team, team.createdBy === user.userId ? 'Owner' : 'Sub-Admin'))}
+                                    {myManagedTeams.map(team => {
+                        const memberRec = team.members?.find(m => (m.user?._id || m.user)?.toString() === user.userId?.toString());
+                        return renderTeamCard(team, memberRec?.role === 'owner' ? 'Owner' : 'Sub-Admin');
+                    })}
                                 </div>
                             </div>
                         )}

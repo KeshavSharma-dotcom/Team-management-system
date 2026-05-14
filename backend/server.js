@@ -2,6 +2,7 @@ const express = require("express")
 const logger = require("./utils/logger")
 require("dotenv").config()
 
+const appConfig = require("./config/appConfig")
 const connectDB = require("./config/db")
 const app = express()
 
@@ -17,8 +18,9 @@ const AuthRoute = require("./routes/authRoutes")
 const teamRoutes = require("./routes/teamRoutes")
 const taskRoutes = require("./routes/taskRoutes")
 const userRoutes = require("./routes/userRoutes")
+const resumeRoutes = require("./routes/resumeRoutes")
 
-const port = process.env.PORT || 5000
+const port = appConfig.server.port
 
 connectDB()
 
@@ -28,13 +30,9 @@ app.use(compression())
 app.use(morgan("dev"))
 
 // CORS — restrict to frontend origin in production
-const allowedOrigins = process.env.ALLOWED_ORIGIN
-    ? process.env.ALLOWED_ORIGIN.split(",")
-    : ["http://localhost:5173", "http://localhost:3000"]
-
 app.use(cors({
     origin: (origin, callback) => {
-        if (!origin || allowedOrigins.includes(origin)) {
+        if (!origin || appConfig.cors.allowedOrigins.includes(origin)) {
             callback(null, true)
         } else {
             callback(new Error("CORS policy: origin not allowed"))
@@ -43,12 +41,12 @@ app.use(cors({
     credentials: true
 }))
 
-app.use(express.json({ limit: "10mb" }))
+app.use(express.json({ limit: appConfig.server.jsonLimit }))
 
 // General rate limiter — 100 requests per 15 min per IP
 const generalLimiter = rateLimit({
-    windowMs: 15 * 60 * 1000,
-    max: 100,
+    windowMs: appConfig.rateLimit.generalWindowMs,
+    max: appConfig.rateLimit.generalMax,
     message: { success: false, message: "Too many requests, please try again after 15 minutes" },
     standardHeaders: true,
     legacyHeaders: false
@@ -56,8 +54,8 @@ const generalLimiter = rateLimit({
 
 // Stricter limiter for auth routes — 10 per 15 min
 const authLimiter = rateLimit({
-    windowMs: 15 * 60 * 1000,
-    max: 10,
+    windowMs: appConfig.rateLimit.authWindowMs,
+    max: appConfig.rateLimit.authMax,
     message: { success: false, message: "Too many auth attempts, please try again after 15 minutes" },
     standardHeaders: true,
     legacyHeaders: false
@@ -71,6 +69,7 @@ app.use("/api/v1/auth", AuthRoute)
 app.use("/api/v1/teams", teamRoutes)
 app.use("/api/v1/tasks", taskRoutes)
 app.use("/api/v1/user", userRoutes)
+app.use("/api/v1/resume", resumeRoutes)
 
 // Health check
 app.get("/api/health", (req, res) => {

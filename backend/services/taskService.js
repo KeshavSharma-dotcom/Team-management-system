@@ -4,9 +4,6 @@ const { GoogleGenerativeAI } = require("@google/generative-ai");
 const AppError = require("../utils/AppError");
 
 class TaskService {
-    constructor() {
-        this.genAI = new GoogleGenerativeAI(process.env.API_KEY);
-    }
 
     async createTask(userId, teamId, taskData) {
         const team = await Team.findById(teamId);
@@ -96,8 +93,9 @@ class TaskService {
     async suggestTasks(goal) {
         if (!goal) throw new AppError("Please provide a goal", 400);
 
-        const model = this.genAI.getGenerativeModel({
-            model: "gemini-1.5-flash",
+        const genAI = new GoogleGenerativeAI(process.env.API_KEY);
+        const model = genAI.getGenerativeModel({
+            model: "gemini-1.5-flash @latest",
             generationConfig: {
                 responseMimeType: "application/json",
                 temperature: 0.7
@@ -112,7 +110,11 @@ Format: [{"title": "...", "description": "..."}]`;
 
         const result = await model.generateContent(prompt);
         const cleaned = result.response.text().replace(/```json|```/g, "").trim();
-        return JSON.parse(cleaned);
+        try {
+            return JSON.parse(cleaned);
+        } catch {
+            throw new AppError("AI returned an unreadable format. Please try rephrasing your goal.", 502);
+        }
     }
 }
 
