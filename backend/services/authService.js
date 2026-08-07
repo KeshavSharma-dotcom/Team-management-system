@@ -104,8 +104,8 @@ class AuthService {
     async resetPassword(email, otp, newPassword) {
         const user = await User.findOne({ email });
         if (!user) throw new AppError("User not found", 404);
-        if(!user.isVerified){
-            AppError("User not verified",400)
+        if (!user.isVerified) {
+            AppError("User not verified", 400)
         }
         user.password = newPassword;
         await user.save();

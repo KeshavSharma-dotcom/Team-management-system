@@ -17,7 +17,6 @@ const storeSecurityKeys = asyncWrapper(async (req, res) => {
     sendResponse(res, 200, "Security keys established", { hasKeys: true });
 });
 
-// Other controllers kept for compatibility
 const User = require("../models/user");
 const crypto = require("crypto");
 const sendEmail = require("../utils/sendEmail");
@@ -39,7 +38,7 @@ const verifySecondaryEmail = asyncWrapper(async (req, res) => {
     const user = await User.findById(req.user.userId);
     if (!user.secondaryOtp || user.secondaryOtp !== req.body.otp) return sendResponse(res, 400, "Invalid code");
     user.isSecondaryVerified = true;
-    user.secondaryOtp = undefined; 
+    user.secondaryOtp = undefined;
     await user.save();
     sendResponse(res, 200, "Secondary email verified");
 });
