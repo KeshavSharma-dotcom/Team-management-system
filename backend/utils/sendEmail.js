@@ -1,31 +1,34 @@
-const nodemailer = require("nodemailer")
-const appConfig = require("../config/appConfig")
-const logger = require("./logger")
+const nodemailer = require("nodemailer");
+const appConfig = require("../config/appConfig");
+const AppError = require("../utils/AppError");
 
-const transport = nodemailer.createTransport({
-        service: appConfig.email.service,
-        auth:{
-            user: appConfig.email.user,
-            pass: appConfig.email.password
-        }
-    })
+const transporter = nodemailer.createTransport({
+    service: "gmail",
+    auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS
+    }
+});
 
-const sendEmail = async ({to, subject, html, text})=>{
-    
+const sendEmail = async ({ to, subject, html, text }) => {
+    if (!to || !subject || (!html && !text)) {
+        throw new AppError("Recipient email, subject, and body are required", 400);
+    }
+
     const mailOptions = {
-        from : `"Team Management Support" <${appConfig.email.user}>`,
+        from: `"Team Management" <${process.env.EMAIL_USER}>`,
         to,
         subject,
         html,
-        text
-    }
-    try{
-        return await transport.sendMail(mailOptions)
-    }catch(err){
-        logger.error(`Email delivery failed: ${err.code || err.name || "unknown"}`)
-        throw new Error("Failed to send the Email, try again or use a different email")
-    }
-    
-}
+        text: text || (html ? html.replace(/<[^>]+>/g, " ").trim() : "")
+    };
 
-module.exports = sendEmail
+    try {
+        return await transporter.sendMail(mailOptions);
+    } catch (error) {
+        console.error("Email send error:", error.message);
+        throw new AppError("Failed to send email. Please try again later.", 500);
+    }
+};
+
+module.exports = sendEmail;

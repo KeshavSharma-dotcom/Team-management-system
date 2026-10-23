@@ -1,16 +1,16 @@
-const mongoose = require("mongoose")
-const bcrypt = require("bcryptjs")
+const mongoose = require("mongoose");
+const bcrypt = require("bcryptjs");
 
-const userSchema = mongoose.Schema({
+const userSchema = new mongoose.Schema({
     name: {
         type: String,
-        required: true,
+        required: [true, "Name is required"],
         trim: true
     },
     username: {
         type: String,
         unique: true,
-        sparse: true, 
+        sparse: true,
         trim: true,
         lowercase: true,
         minlength: [3, "Username must be at least 3 characters long"],
@@ -18,8 +18,10 @@ const userSchema = mongoose.Schema({
     },
     email: {
         type: String,
-        required: true,
+        required: [true, "Email is required"],
         unique: true,
+        trim: true,
+        lowercase: true,
         index: true,
         match: [/^[^\s@]+@[^\s@]+\.[^\s@]+$/, "Enter a valid email"]
     },
@@ -29,6 +31,8 @@ const userSchema = mongoose.Schema({
     },
     secondaryEmail: {
         type: String,
+        trim: true,
+        lowercase: true,
         match: [/^[^\s@]+@[^\s@]+\.[^\s@]+$/, "Enter a valid email"],
         sparse: true,
         unique: true
@@ -39,33 +43,34 @@ const userSchema = mongoose.Schema({
     },
     password: {
         type: String,
-        required: true,
-        minlength: [8, "Password must be at least 8 characters long"]
+        required: [true, "Password is required"],
+        minlength: [8, "Password must be at least 8 characters long"],
+        select: false
     },
     publicKey: {
-        type: String, 
+        type: String
     },
     encryptedPrivateKey: {
-        type: String, 
+        type: String
     },
     keyMetadata: {
-        iv: String, 
-        salt: String 
+        iv: String,
+        salt: String
     },
     role: {
         type: String,
         enum: ["admin", "member"],
         default: "member"
     },
-    otp: { type: String },
-    otpExpiresAt: { type: Date },
-    secondaryOtp: { type: String },
+    otp: { type: String, select: false },
+    otpExpiresAt: { type: Date, select: false },
+    secondaryOtp: { type: String, select: false },
 
     profile: {
         bio: { type: String, default: "" },
         contact: { type: String, default: "" },
         location: { type: String, default: "" },
-        skills: [{ type: String }],
+        skills: [{ type: String, trim: true }],
         bannerUrl: { type: String, default: "" },
         socialLinks: {
             github: { type: String, default: "" },
@@ -74,12 +79,28 @@ const userSchema = mongoose.Schema({
         }
     },
     avatarColor: { type: String, default: "#6366f1" }
-}, { timestamps: true })
+}, { timestamps: true });
 
-userSchema.pre("save", async function() {
+userSchema.pre("validate", function () {
+    if (this.secondaryEmail === "") {
+        this.secondaryEmail = undefined;
+    }
+    if (this.username === "") {
+        this.username = undefined;
+    }
+});
+
+// ✅ FIX 2: Pure async save hook (no next parameter)
+userSchema.pre("save", async function () {
     if (!this.isModified("password")) return;
-    const salt = await bcrypt.genSalt(10)
-    this.password = await bcrypt.hash(this.password, salt)
-})
 
-module.exports = mongoose.model("User", userSchema)
+    const salt = await bcrypt.genSalt(10);
+    this.password = await bcrypt.hash(this.password, salt);
+});
+
+// Instance method to compare passwords during login
+userSchema.methods.comparePassword = async function (candidatePassword) {
+    return await bcrypt.compare(candidatePassword, this.password);
+};
+
+module.exports = mongoose.model("User", userSchema);
