@@ -12,7 +12,7 @@ const Dashboard = () => {
     const [searchTerm, setSearchTerm] = useState('')
     const [loading, setLoading] = useState(true)
     const navigate = useNavigate()
-    
+
     const user = getStoredUser({ name: 'User' })
 
     useEffect(() => {
@@ -30,7 +30,7 @@ const Dashboard = () => {
         }
     };
 
-    const filteredTeams = teams.filter(team => 
+    const filteredTeams = teams.filter(team =>
         team.teamName.toLowerCase().includes(searchTerm.toLowerCase()) ||
         team.teamCode.toLowerCase().includes(searchTerm.toLowerCase())
     )
@@ -46,8 +46,8 @@ const Dashboard = () => {
     });
 
     const renderTeamCard = (team, role) => (
-        <motion.div 
-            key={team._id} 
+        <motion.div
+            key={team._id}
             className="team-card"
             whileHover={{ y: -5 }}
             onClick={() => navigate(`/team/${team._id}`)}
@@ -56,8 +56,8 @@ const Dashboard = () => {
                 <div className="team-avatar">
                     {team.teamName.charAt(0)}
                 </div>
-                <div style={{display: 'flex', gap: '8px'}}>
-                    <span className="role-tag" style={{fontSize: '0.65rem', padding: '2px 8px', marginTop: 0}}>
+                <div style={{ display: 'flex', gap: '8px' }}>
+                    <span className="role-tag" style={{ fontSize: '0.65rem', padding: '2px 8px', marginTop: 0 }}>
                         {role}
                     </span>
                     <span className={`status-tag ${team.status}`}>
@@ -75,7 +75,7 @@ const Dashboard = () => {
     );
 
     return (
-        <motion.div 
+        <motion.div
             className="dashboard-container"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -103,9 +103,9 @@ const Dashboard = () => {
                         <h2>Your Teams</h2>
                     </div>
                     <div className="search-filter">
-                        <input 
-                            type="text" 
-                            placeholder="Search teams..." 
+                        <input
+                            type="text"
+                            placeholder="Search teams..."
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
                         />
@@ -119,20 +119,20 @@ const Dashboard = () => {
                 ) : filteredTeams.length > 0 ? (
                     <>
                         {myManagedTeams.length > 0 && (
-                            <div style={{marginBottom: '40px'}}>
-                                <h3 style={{color: '#94a3b8', fontSize: '1rem', marginBottom: '15px'}}>Teams You Manage</h3>
+                            <div style={{ marginBottom: '40px' }}>
+                                <h3 style={{ color: '#94a3b8', fontSize: '1rem', marginBottom: '15px' }}>Teams You Manage</h3>
                                 <div className="teams-grid">
                                     {myManagedTeams.map(team => {
-                        const memberRec = team.members?.find(m => (m.user?._id || m.user)?.toString() === user.userId?.toString());
-                        return renderTeamCard(team, memberRec?.role === 'owner' ? 'Owner' : 'Sub-Admin');
-                    })}
+                                        const memberRec = team.members?.find(m => (m.user?._id || m.user)?.toString() === user.userId?.toString());
+                                        return renderTeamCard(team, memberRec?.role === 'owner' ? 'Owner' : 'Sub-Admin');
+                                    })}
                                 </div>
                             </div>
                         )}
-                        
+
                         {myJoinedTeams.length > 0 && (
                             <div>
-                                <h3 style={{color: '#94a3b8', fontSize: '1rem', marginBottom: '15px'}}>Joined Teams</h3>
+                                <h3 style={{ color: '#94a3b8', fontSize: '1rem', marginBottom: '15px' }}>Joined Teams</h3>
                                 <div className="teams-grid">
                                     {myJoinedTeams.map(team => renderTeamCard(team, 'Member'))}
                                 </div>

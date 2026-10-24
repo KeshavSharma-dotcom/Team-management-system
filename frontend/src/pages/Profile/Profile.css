@@ -124,7 +124,9 @@
     gap: 20px;
 }
 
-.input-group.full-width { grid-column: span 2; }
+.input-group.full-width {
+    grid-column: span 2;
+}
 
 .input-group label {
     display: block;
@@ -133,7 +135,8 @@
     margin-bottom: 8px;
 }
 
-.input-group input, .input-group textarea {
+.input-group input,
+.input-group textarea {
     width: 100%;
     background: rgba(0, 0, 0, 0.2);
     border: 1px solid rgba(255, 255, 255, 0.1);
@@ -144,7 +147,10 @@
     box-sizing: border-box;
 }
 
-.input-group input:disabled { opacity: 0.6; cursor: not-allowed; }
+.input-group input:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
 
 .save-btn {
     margin-top: 20px;
@@ -159,7 +165,9 @@
     gap: 8px;
 }
 
-.secondary-email-section { margin-top: 50px; }
+.secondary-email-section {
+    margin-top: 50px;
+}
 
 .email-card {
     background: rgba(0, 0, 0, 0.2);
@@ -189,10 +197,22 @@
     border-radius: 12px;
     border: 1px solid rgba(255, 255, 255, 0.05);
 }
-.verified { color: #22c55e; font-size: 0.75rem; font-weight: 700; }
-.unverified { color: #f59e0b; font-size: 0.75rem; font-weight: 700; }
 
-.btn-edit, .save-btn, .btn-add {
+.verified {
+    color: #22c55e;
+    font-size: 0.75rem;
+    font-weight: 700;
+}
+
+.unverified {
+    color: #f59e0b;
+    font-size: 0.75rem;
+    font-weight: 700;
+}
+
+.btn-edit,
+.save-btn,
+.btn-add {
     background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
     color: white;
     border: none;
@@ -207,7 +227,9 @@
     box-shadow: 0 4px 15px rgba(99, 102, 241, 0.2);
 }
 
-.btn-edit:hover, .save-btn:hover, .btn-add:hover {
+.btn-edit:hover,
+.save-btn:hover,
+.btn-add:hover {
     transform: translateY(-2px);
     box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4);
     filter: brightness(1.1);
@@ -254,12 +276,15 @@
     .profile-grid {
         grid-template-columns: 1fr;
     }
+
     .profile-sidebar {
         margin-bottom: 20px;
     }
+
     .profile-main {
         padding: 25px;
     }
+
     .profile-form .form-grid {
         grid-template-columns: 1fr;
     }
@@ -300,7 +325,10 @@
 
 .modal-overlay {
     position: fixed;
-    top: 0; left: 0; width: 100%; height: 100%;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
     background: rgba(0, 0, 0, 0.7);
     display: flex;
     justify-content: center;
@@ -326,7 +354,8 @@
 
 .modal-close {
     position: absolute;
-    top: 20px; right: 20px;
+    top: 20px;
+    right: 20px;
     background: transparent;
     border: none;
     color: #94a3b8;

@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import { 
-    MessageSquare, CheckCircle2, Sparkles, Send, 
+import {
+    MessageSquare, CheckCircle2, Sparkles, Send,
     Bot, Users as UsersIcon, Settings, User, Crown, Bell, Check, X,
     FileText, Edit3, Save, ChevronDown
 } from 'lucide-react'
@@ -27,7 +27,7 @@ const TeamDetails = () => {
     const [editingDesc, setEditingDesc] = useState(false)
     const [descValue, setDescValue] = useState('')
     const [savingDesc, setSavingDesc] = useState(false)
-    
+
     const currentUser = getStoredUser({})
 
     useEffect(() => {
@@ -73,7 +73,7 @@ const TeamDetails = () => {
                 body: JSON.stringify({ teamId, text: message })
             })
             setMessage('')
-            fetchTeamData() 
+            fetchTeamData()
         } catch (err) { console.error(err) }
     }
 
@@ -141,7 +141,7 @@ const TeamDetails = () => {
     const isAdminOrOwner = currentMember && (currentMember.role === 'owner' || currentMember.role === 'sub-admin')
 
     return (
-        <motion.div 
+        <motion.div
             className="team-details-container"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -154,10 +154,10 @@ const TeamDetails = () => {
                         {team.hide && <span className="badge hidden">Hidden</span>}
                     </div>
                 </div>
-                
+
                 <div className="header-actions">
                     <button className="ai-summary-btn" onClick={getAiSummary} disabled={aiLoading}>
-                        {aiLoading 
+                        {aiLoading
                             ? <><span className="ai-spinner" /> Summarising...</>
                             : <><Sparkles size={16} /> Discussion Summary</>}
                     </button>
@@ -292,7 +292,7 @@ const TeamDetails = () => {
                                     <div className="mini-member-list">
                                         {team.members?.slice(0, 5).map((member, i) => (
                                             <div key={i} className="mini-member">
-                                                <div 
+                                                <div
                                                     className="mini-avatar"
                                                     style={{ backgroundColor: member.user?.avatarColor || '#4f46e5' }}
                                                 >
@@ -322,12 +322,12 @@ const TeamDetails = () => {
                         <div className="chat-messages">
                             {team.discussions?.map((msg, index) => {
                                 const isOwnMsg = msg.user?._id === currentUser.userId || msg.user === currentUser.userId;
-                                const displayName = msg.userName || "User"; 
-                                
+                                const displayName = msg.userName || "User";
+
                                 return (
                                     <div key={index} className={`msg-container ${isOwnMsg ? 'own-container' : ''}`}>
-                                        <div 
-                                            className="chat-avatar-circle" 
+                                        <div
+                                            className="chat-avatar-circle"
                                             style={{ backgroundColor: msg.user?.avatarColor || '#6366f1' }}
                                         >
                                             {getInitials(msg.user?.name || msg.userName)}
@@ -342,9 +342,9 @@ const TeamDetails = () => {
                         </div>
 
                         <form className="chat-input-area" onSubmit={handleSendMessage}>
-                            <input 
-                                type="text" 
-                                placeholder="Message the team..." 
+                            <input
+                                type="text"
+                                placeholder="Message the team..."
                                 value={message}
                                 onChange={(e) => setMessage(e.target.value)}
                             />
@@ -368,7 +368,7 @@ const TeamDetails = () => {
                                     const isOwnerMember = member.role === 'owner'
                                     return (
                                         <div key={index} className="member-card">
-                                            <div 
+                                            <div
                                                 className="member-avatar-large"
                                                 style={{ backgroundColor: member.user?.avatarColor || '#6366f1', backgroundImage: 'none' }}
                                             >

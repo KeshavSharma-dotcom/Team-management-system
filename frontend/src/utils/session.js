@@ -1,26 +1,40 @@
-const USER_KEY = 'user'
-const TOKEN_KEY = 'token'
+const SESSION_KEY = 'auth_session'
 
-export const getToken = () => localStorage.getItem(TOKEN_KEY)
-
-export const getStoredUser = (fallback = null) => {
-    const rawUser = localStorage.getItem(USER_KEY)
-    if (!rawUser) return fallback
-
+export const setSession = (data) => {
     try {
-        return JSON.parse(rawUser)
-    } catch {
-        localStorage.removeItem(USER_KEY)
-        return fallback
+        localStorage.setItem(SESSION_KEY, JSON.stringify(data))
+    } catch (error) {
+        console.error('Error saving session:', error)
     }
 }
 
-export const setSession = ({ token, user }) => {
-    localStorage.setItem(TOKEN_KEY, token)
-    localStorage.setItem(USER_KEY, JSON.stringify(user))
+export const getSession = () => {
+    try {
+        const item = localStorage.getItem(SESSION_KEY)
+        return item ? JSON.parse(item) : null
+    } catch (error) {
+        console.error('Error reading session:', error)
+        return null
+    }
 }
 
 export const clearSession = () => {
-    localStorage.removeItem(TOKEN_KEY)
-    localStorage.removeItem(USER_KEY)
+    try {
+        localStorage.removeItem(SESSION_KEY)
+    } catch (error) {
+        console.error('Error clearing session:', error)
+    }
 }
+
+export const getToken = () => {
+    const session = getSession()
+    return session?.token || null
+}
+
+export const getUser = () => {
+    const session = getSession()
+    return session?.user || null
+}
+
+// Alias so components expecting getStoredUser work seamlessly
+export const getStoredUser = getUser;

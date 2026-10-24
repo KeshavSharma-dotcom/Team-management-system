@@ -9,7 +9,7 @@ import { apiCall } from '../../utils/api'
 const ResetPassword = () => {
     const location = useLocation()
     const navigate = useNavigate()
-    
+
     const [password, setPassword] = useState('')
     const [confirmPassword, setConfirmPassword] = useState('')
     const [loading, setLoading] = useState(false)
@@ -25,7 +25,7 @@ const ResetPassword = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault()
-        
+
         if (password !== confirmPassword) {
             return toast.error('Passwords do not match')
         }
@@ -48,13 +48,13 @@ const ResetPassword = () => {
     }
 
     return (
-        <motion.div 
+        <motion.div
             className="auth-page"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
         >
-            <motion.div 
+            <motion.div
                 className="auth-card"
                 initial={{ y: 20, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
@@ -68,23 +68,23 @@ const ResetPassword = () => {
                 <form onSubmit={handleSubmit}>
                     <div className="input-group">
                         <Lock size={20} />
-                        <input 
-                            type="password" 
-                            placeholder="New Password" 
+                        <input
+                            type="password"
+                            placeholder="New Password"
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
-                            required 
+                            required
                         />
                     </div>
 
                     <div className="input-group">
                         <Lock size={20} />
-                        <input 
-                            type="password" 
-                            placeholder="Confirm New Password" 
+                        <input
+                            type="password"
+                            placeholder="Confirm New Password"
                             value={confirmPassword}
                             onChange={(e) => setConfirmPassword(e.target.value)}
-                            required 
+                            required
                         />
                     </div>
 

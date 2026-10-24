@@ -11,18 +11,44 @@ const Register = () => {
     const [loading, setLoading] = useState(false)
     const navigate = useNavigate()
 
-    const handleChange = (e) => setFormData({ ...formData, [e.target.name]: e.target.value })
+    const handleChange = (e) => {
+        setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }))
+    }
 
     const handleSubmit = async (e) => {
         e.preventDefault()
+
+        const trimmedName = formData.name.trim()
+        const trimmedEmail = formData.email.trim().toLowerCase()
+        const trimmedPassword = formData.password.trim()
+
+        if (!trimmedName || !trimmedEmail || !trimmedPassword) {
+            toast.error('Please fill in all required fields')
+            return
+        }
+
+        if (trimmedPassword.length < 8) {
+            toast.error('Password must be at least 8 characters long')
+            return
+        }
+
         setLoading(true)
+
         try {
+            const payload = {
+                name: trimmedName,
+                email: trimmedEmail,
+                password: trimmedPassword,
+                role: formData.role
+            }
+
             await apiCall('/auth/register', {
                 method: 'POST',
-                body: JSON.stringify(formData)
+                body: JSON.stringify(payload)
             })
+
             toast.success('OTP sent to your email!')
-            navigate('/verify-otp', { state: { email: formData.email } })
+            navigate('/verify-otp', { state: { email: trimmedEmail } })
         } catch (error) {
             toast.error(error.message || 'Registration failed')
         } finally {
@@ -49,16 +75,44 @@ const Register = () => {
                 <form onSubmit={handleSubmit} className="auth-form">
                     <div className="input-group">
                         <User size={18} className="input-icon" />
-                        <input type="text" name="name" placeholder="Full name" required value={formData.name} onChange={handleChange} />
+                        <input
+                            type="text"
+                            name="name"
+                            placeholder="Full name"
+                            required
+                            autoComplete="name"
+                            value={formData.name}
+                            onChange={handleChange}
+                        />
                     </div>
+
                     <div className="input-group">
                         <Mail size={18} className="input-icon" />
-                        <input type="email" name="email" placeholder="Email address" required value={formData.email} onChange={handleChange} />
+                        <input
+                            type="email"
+                            name="email"
+                            placeholder="Email address"
+                            required
+                            autoComplete="email"
+                            value={formData.email}
+                            onChange={handleChange}
+                        />
                     </div>
+
                     <div className="input-group">
                         <Lock size={18} className="input-icon" />
-                        <input type="password" name="password" placeholder="Password (min 8 chars)" required value={formData.password} onChange={handleChange} />
+                        <input
+                            type="password"
+                            name="password"
+                            placeholder="Password (min 8 chars)"
+                            required
+                            minLength={8}
+                            autoComplete="new-password"
+                            value={formData.password}
+                            onChange={handleChange}
+                        />
                     </div>
+
                     <div className="input-group">
                         <Shield size={18} className="input-icon" />
                         <select name="role" onChange={handleChange} value={formData.role}>
@@ -68,7 +122,11 @@ const Register = () => {
                     </div>
 
                     <button type="submit" className="auth-btn" disabled={loading}>
-                        {loading ? <span className="btn-loader" /> : <>Create Account <ArrowRight size={18} /></>}
+                        {loading ? (
+                            <span className="btn-loader" />
+                        ) : (
+                            <>Create Account <ArrowRight size={18} /></>
+                        )}
                     </button>
                 </form>
 

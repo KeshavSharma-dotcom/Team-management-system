@@ -33,7 +33,8 @@
     gap: 12px;
 }
 
-.btn-primary, .btn-secondary {
+.btn-primary,
+.btn-secondary {
     padding: 12px 24px;
     border-radius: 8px;
     font-weight: 600;
@@ -56,8 +57,13 @@
     border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-.btn-primary:hover { background: #4f46e5; }
-.btn-secondary:hover { background: rgba(255, 255, 255, 0.1); }
+.btn-primary:hover {
+    background: #4f46e5;
+}
+
+.btn-secondary:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
 
 .section-title {
     display: flex;
@@ -156,11 +162,24 @@
     font-weight: 700;
 }
 
-.status-tag.public { background: rgba(34, 197, 94, 0.1); color: #22c55e; }
-.status-tag.private { background: rgba(245, 158, 11, 0.1); color: #f59e0b; }
+.status-tag.public {
+    background: rgba(34, 197, 94, 0.1);
+    color: #22c55e;
+}
 
-.team-card h3 { margin-bottom: 10px; }
-.team-card p { color: #94a3b8; font-size: 0.9rem; }
+.status-tag.private {
+    background: rgba(245, 158, 11, 0.1);
+    color: #f59e0b;
+}
+
+.team-card h3 {
+    margin-bottom: 10px;
+}
+
+.team-card p {
+    color: #94a3b8;
+    font-size: 0.9rem;
+}
 
 .team-card-footer {
     margin-top: 20px;
@@ -172,7 +191,11 @@
     font-weight: 600;
 }
 
-.loader-container { padding: 50px; text-align: center; }
+.loader-container {
+    padding: 50px;
+    text-align: center;
+}
+
 .loader {
     width: 40px;
     height: 40px;
@@ -183,8 +206,15 @@
     display: inline-block;
 }
 
-@keyframes spin { to { transform: rotate(360deg); } }
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
 
 @media (max-width: 768px) {
-    .dashboard-header { flex-direction: column; align-items: flex-start; }
+    .dashboard-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
 }

@@ -36,7 +36,9 @@
     font-family: 'Inter', sans-serif;
 }
 
-.back-link:hover { color: #f1f5f9; }
+.back-link:hover {
+    color: #f1f5f9;
+}
 
 .settings-header {
     display: flex;
@@ -67,7 +69,11 @@
     margin: 0 0 4px;
 }
 
-.settings-header p { color: #64748b; margin: 0; font-size: 0.9rem; }
+.settings-header p {
+    color: #64748b;
+    margin: 0;
+    font-size: 0.9rem;
+}
 
 .settings-form {
     display: flex;
@@ -75,7 +81,11 @@
     gap: 28px;
 }
 
-.setting-group { display: flex; flex-direction: column; gap: 10px; }
+.setting-group {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
 
 .setting-group label {
     font-size: 0.85rem;
@@ -122,7 +132,9 @@
     box-sizing: border-box;
 }
 
-.settings-input-wrap input::placeholder { color: #475569; }
+.settings-input-wrap input::placeholder {
+    color: #475569;
+}
 
 .setting-block {
     display: flex;
@@ -141,7 +153,11 @@
     margin: 0 0 4px;
 }
 
-.setting-block-header p { font-size: 0.85rem; color: #64748b; margin: 0; }
+.setting-block-header p {
+    font-size: 0.85rem;
+    color: #64748b;
+    margin: 0;
+}
 
 .toggle-group {
     display: flex;
@@ -221,7 +237,10 @@
     box-shadow: 0 8px 30px rgba(99, 102, 241, 0.5);
 }
 
-.save-settings-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+.save-settings-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
 
 .btn-loader {
     width: 20px;
@@ -232,7 +251,12 @@
     animation: spin 0.8s linear infinite;
     display: inline-block;
 }
-@keyframes spin { to { transform: rotate(360deg); } }
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
 
 .settings-textarea {
     width: 100%;
@@ -248,7 +272,10 @@
     line-height: 1.6;
     min-height: 80px;
 }
-.settings-textarea::placeholder { color: #475569; }
+
+.settings-textarea::placeholder {
+    color: #475569;
+}
 
 .setting-hint {
     font-size: 0.78rem;

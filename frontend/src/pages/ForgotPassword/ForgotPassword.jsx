@@ -31,13 +31,13 @@ const ForgotPassword = () => {
     }
 
     return (
-        <motion.div 
+        <motion.div
             className="auth-page"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
         >
-            <motion.div 
+            <motion.div
                 className="auth-card"
                 initial={{ y: 20, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
@@ -51,12 +51,12 @@ const ForgotPassword = () => {
                 <form onSubmit={handleSubmit}>
                     <div className="input-group">
                         <Mail size={20} />
-                        <input 
-                            type="email" 
-                            placeholder="Email Address" 
+                        <input
+                            type="email"
+                            placeholder="Email Address"
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
-                            required 
+                            required
                         />
                     </div>
 

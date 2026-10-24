@@ -51,7 +51,8 @@
     background: rgba(0, 0, 0, 0.3);
 }
 
-.input-group input, .input-group select {
+.input-group input,
+.input-group select {
     background: transparent;
     border: none;
     outline: none;

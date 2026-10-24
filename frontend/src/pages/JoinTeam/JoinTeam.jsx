@@ -61,7 +61,7 @@ const JoinTeam = () => {
     )
 
     return (
-        <motion.div 
+        <motion.div
             className="join-page"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -70,12 +70,12 @@ const JoinTeam = () => {
                 <Sparkles className="sparkle-icon" size={32} />
                 <h1>Discover <span>Teams</span></h1>
                 <p>Join public communities or send a request to private squads.</p>
-                
+
                 <div className="search-container">
                     <Search size={20} className="search-icon" />
-                    <input 
-                        type="text" 
-                        placeholder="Search for a team, topic, or code..." 
+                    <input
+                        type="text"
+                        placeholder="Search for a team, topic, or code..."
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
                     />
@@ -89,8 +89,8 @@ const JoinTeam = () => {
                     </div>
                     <div className="recommendation-grid">
                         {allTeams.slice(0, 2).map(team => (
-                            <motion.div 
-                                key={team._id} 
+                            <motion.div
+                                key={team._id}
                                 className="recommend-card"
                                 onClick={() => handleRequest(team)}
                                 whileHover={{ y: -5 }}
@@ -115,8 +115,8 @@ const JoinTeam = () => {
                         const isPrivate = team.status === 'private'
 
                         return (
-                            <motion.div 
-                                key={team._id} 
+                            <motion.div
+                                key={team._id}
                                 className={`join-card ${isPrivate ? 'private-team' : ''}`}
                                 whileHover={{ scale: 1.02 }}
                             >
@@ -129,8 +129,8 @@ const JoinTeam = () => {
                                 </div>
                                 <h3>{team.teamName}</h3>
                                 <p className="team-code-badge">#{team.teamCode}</p>
-                                
-                                <button 
+
+                                <button
                                     className={`join-btn ${isPending ? 'pending' : ''} ${isPrivate ? 'request-btn' : ''}`}
                                     onClick={() => handleRequest(team)}
                                     disabled={isPending}

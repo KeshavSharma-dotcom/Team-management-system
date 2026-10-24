@@ -7,13 +7,13 @@ import { getToken } from '../../utils/session'
 
 const Home = () => {
   const navigate = useNavigate()
-  
-  useEffect(()=>{
+
+  useEffect(() => {
     const token = getToken()
-    if(token){
+    if (token) {
       navigate("/dashboard")
     }
-  },[navigate])
+  }, [navigate])
   const staggerContainer = {
     hidden: { opacity: 0 },
     visible: {
@@ -27,32 +27,32 @@ const Home = () => {
   const fadeInUp = {
     hidden: { opacity: 0, y: 30 },
     visible: {
-        opacity: 1,
-        y: 0,
-        transition: {
-            duration: 0.6,
-            ease: 'easeOut'
-        }
+      opacity: 1,
+      y: 0,
+      transition: {
+        duration: 0.6,
+        ease: 'easeOut'
+      }
     }
   }
 
   return (
     <div className="home-container">
-      <motion.section 
+      <motion.section
         className="hero-section"
         initial="hidden"
         animate="visible"
         variants={fadeInUp}
       >
         <div className="hero-content">
-          <motion.h1 
+          <motion.h1
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3, duration: 0.8 }}
           >
             Team work, tasks, and decisions in one place.
           </motion.h1>
-          
+
           <motion.p
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -60,7 +60,7 @@ const Home = () => {
           >
             Coordinate teams, track work, discuss decisions, and keep project context visible.
           </motion.p>
-          
+
           <motion.div className="hero-actions">
             <Link to="/register" className="cta-btn main-cta">
               Create Account
@@ -69,7 +69,7 @@ const Home = () => {
         </div>
       </motion.section>
 
-      <motion.section 
+      <motion.section
         className="qualities-section"
         initial="hidden"
         whileInView="visible"
@@ -88,13 +88,13 @@ const Home = () => {
             <h3>Team Access</h3>
             <p>Create open teams, private teams, and approval flows for new members.</p>
           </motion.div>
-          
+
           <motion.div className="quality-card" variants={fadeInUp}>
             <ShieldCheck size={40} className="quality-icon" />
             <h3>Clear Roles</h3>
             <p>Owners can assign responsibilities and keep membership changes visible.</p>
           </motion.div>
-          
+
           <motion.div className="quality-card" variants={fadeInUp}>
             <Target size={40} className="quality-icon" />
             <h3>Work Visibility</h3>
@@ -103,7 +103,7 @@ const Home = () => {
         </div>
       </motion.section>
 
-      <motion.section 
+      <motion.section
         className="register-cta-section"
         initial={{ opacity: 0 }}
         whileInView={{ opacity: 1 }}

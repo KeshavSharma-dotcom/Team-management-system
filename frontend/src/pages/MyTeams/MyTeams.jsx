@@ -2,33 +2,58 @@ import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { Users, Plus, Search, ArrowRight, ShieldCheck } from 'lucide-react'
+import toast from 'react-hot-toast'
 import './MyTeams.css'
 
 import { apiCall } from '../../utils/api'
-import { getStoredUser } from '../../utils/session'
+import { getUser, getStoredUser } from '../../utils/session'
 
 const MyTeams = () => {
     const [myTeams, setMyTeams] = useState([])
     const [loading, setLoading] = useState(true)
     const navigate = useNavigate()
-    const currentUser = getStoredUser()
+
+    // Fallback for both session helper naming conventions
+    const currentUser = (typeof getUser === 'function' ? getUser() : null) ||
+        (typeof getStoredUser === 'function' ? getStoredUser() : null)
+
+    const currentUserId = currentUser?.id || currentUser?.userId || currentUser?._id
 
     useEffect(() => {
+        let isMounted = true
+
         const fetchMyTeams = async () => {
             try {
                 const data = await apiCall('/teams/my-teams')
-                setMyTeams(data.teams || [])
+                if (isMounted) {
+                    setMyTeams(data.teams || data || [])
+                }
             } catch (err) {
-                console.error(err)
+                if (isMounted) {
+                    toast.error(err.message || 'Failed to load your teams')
+                }
             } finally {
-                setLoading(false)
+                if (isMounted) {
+                    setLoading(false)
+                }
             }
         }
+
         fetchMyTeams()
+
+        return () => {
+            isMounted = false
+        }
     }, [])
 
+    const isOwner = (team) => {
+        if (!currentUserId || !team?.createdBy) return false
+        const creatorId = typeof team.createdBy === 'object' ? team.createdBy._id || team.createdBy.id : team.createdBy
+        return String(creatorId) === String(currentUserId)
+    }
+
     return (
-        <motion.div 
+        <motion.div
             className="my-teams-container"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -52,29 +77,35 @@ const MyTeams = () => {
                 <div className="loader"></div>
             ) : myTeams.length > 0 ? (
                 <div className="my-teams-grid">
-                    {myTeams.map((team) => (
-                        <motion.div 
-                            key={team._id} 
-                            className="my-team-card"
-                            whileHover={{ y: -5 }}
-                            onClick={() => navigate(`/team/${team._id}`)}
-                        >
-                            <div className="card-top">
-                                <div className="team-icon">
-                                    {team.teamName.charAt(0)}
+                    {myTeams.map((team) => {
+                        const displayName = team?.teamName || team?.name || 'Untitled Team'
+                        const initialLetter = displayName.charAt(0).toUpperCase()
+                        const memberCount = Array.isArray(team?.members) ? team.members.length : 0
+
+                        return (
+                            <motion.div
+                                key={team._id || team.id}
+                                className="my-team-card"
+                                whileHover={{ y: -5 }}
+                                onClick={() => navigate(`/team/${team._id || team.id}`)}
+                            >
+                                <div className="card-top">
+                                    <div className="team-icon">
+                                        {initialLetter}
+                                    </div>
+                                    {isOwner(team) && (
+                                        <span className="owner-badge"><ShieldCheck size={12} /> Owner</span>
+                                    )}
                                 </div>
-                                {team.createdBy === currentUser?.userId && (
-                                    <span className="owner-badge"><ShieldCheck size={12}/> Owner</span>
-                                )}
-                            </div>
-                            <h3>{team.teamName}</h3>
-                            <p className="team-code">Code: {team.teamCode}</p>
-                            <div className="card-footer">
-                                <span>{team.members?.length} Members</span>
-                                <ArrowRight size={16} />
-                            </div>
-                        </motion.div>
-                    ))}
+                                <h3>{displayName}</h3>
+                                <p className="team-code">Code: {team?.teamCode || 'N/A'}</p>
+                                <div className="card-footer">
+                                    <span>{memberCount} {memberCount === 1 ? 'Member' : 'Members'}</span>
+                                    <ArrowRight size={16} />
+                                </div>
+                            </motion.div>
+                        )
+                    })}
                 </div>
             ) : (
                 <div className="empty-teams">

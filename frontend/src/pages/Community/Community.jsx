@@ -42,25 +42,25 @@ const Community = () => {
     };
 
     return (
-        <motion.div 
+        <motion.div
             className="community-container"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
         >
             <div className="community-header">
-                <h1><Globe size={32} style={{display: 'inline', verticalAlign: 'middle', marginRight: '10px'}}/> Community Teams</h1>
+                <h1><Globe size={32} style={{ display: 'inline', verticalAlign: 'middle', marginRight: '10px' }} /> Community Teams</h1>
                 <p>Discover and join public teams to collaborate and grow together.</p>
             </div>
 
             {teams.length === 0 && !loading ? (
-                <div style={{textAlign: 'center', marginTop: '50px', color: '#94a3b8'}}>
+                <div style={{ textAlign: 'center', marginTop: '50px', color: '#94a3b8' }}>
                     <p>No public teams found.</p>
                 </div>
             ) : (
                 <div className="community-grid">
                     {teams.map((team, idx) => (
-                        <motion.div 
-                            key={team._id} 
+                        <motion.div
+                            key={team._id}
                             className="community-card"
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
@@ -86,7 +86,7 @@ const Community = () => {
                 </div>
             )}
 
-            {loading && <div className="loader" style={{margin: '40px auto'}}></div>}
+            {loading && <div className="loader" style={{ margin: '40px auto' }}></div>}
 
             {hasMore && !loading && teams.length > 0 && (
                 <div className="pagination">

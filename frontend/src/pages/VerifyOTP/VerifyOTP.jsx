@@ -12,7 +12,7 @@ const VerifyOTP = () => {
     const navigate = useNavigate()
     const [otp, setOtp] = useState('')
     const [loading, setLoading] = useState(false)
-    
+
     const email = location.state?.email || ''
 
     const handleSubmit = async (e) => {
@@ -26,7 +26,7 @@ const VerifyOTP = () => {
             })
 
             if (location.state?.type === 'reset') {
-                navigate('/reset-password', { state: { email, otp } }) 
+                navigate('/reset-password', { state: { email, otp } })
             } else {
                 toast.success('Account verified successfully!')
                 navigate('/login')
@@ -51,13 +51,13 @@ const VerifyOTP = () => {
     }
 
     return (
-        <motion.div 
+        <motion.div
             className="auth-page"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
         >
-            <motion.div 
+            <motion.div
                 className="auth-card"
                 initial={{ scale: 0.9, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
@@ -67,18 +67,18 @@ const VerifyOTP = () => {
                     <KeyRound size={32} />
                 </div>
                 <h2>Verify Identity</h2>
-                <p className="subtitle">We sent a 6-digit code to <br/> <span>{email}</span></p>
+                <p className="subtitle">We sent a 6-digit code to <br /> <span>{email}</span></p>
 
                 <form onSubmit={handleSubmit}>
                     <div className="otp-input-wrapper">
-                        <input 
-                            type="text" 
-                            maxLength="6" 
+                        <input
+                            type="text"
+                            maxLength="6"
                             placeholder="000000"
                             className="otp-field"
                             value={otp}
                             onChange={(e) => setOtp(e.target.value)}
-                            required 
+                            required
                         />
                     </div>
 

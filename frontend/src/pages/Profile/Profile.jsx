@@ -53,11 +53,11 @@ const Profile = () => {
                 method: 'PATCH',
                 body: JSON.stringify(formData)
             });
-        
-            setIsEditing(false); 
-            setUser(data.user); 
+
+            setIsEditing(false);
+            setUser(data.user);
             toast.success("Profile Updated!");
-        } catch (err) { 
+        } catch (err) {
             console.error(err);
             toast.error(err.message || "Update failed");
         } finally {
@@ -88,7 +88,7 @@ const Profile = () => {
                 body: JSON.stringify({ otp })
             })
             toast.success('Email verified successfully')
-            setUser({...user, secondaryEmail: secondaryEmail || user.secondaryEmail, isSecondaryVerified: true})
+            setUser({ ...user, secondaryEmail: secondaryEmail || user.secondaryEmail, isSecondaryVerified: true })
             setShowVerifyModal(false)
             setOtp('')
         } catch (err) {
@@ -101,10 +101,10 @@ const Profile = () => {
     return (
         <motion.div className="profile-container" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
             <div className="profile-grid">
-                
+
                 <div className="profile-sidebar">
-                    <div className="profile-banner" style={{ 
-                        backgroundImage: formData.bannerUrl ? `url(${formData.bannerUrl})` : 'linear-gradient(135deg, #6366f1 0%, #a855f7 100%)' 
+                    <div className="profile-banner" style={{
+                        backgroundImage: formData.bannerUrl ? `url(${formData.bannerUrl})` : 'linear-gradient(135deg, #6366f1 0%, #a855f7 100%)'
                     }}></div>
                     <div className="avatar-section">
                         <div className="avatar-circle" style={{ backgroundColor: user.avatarColor || '#6366f1' }}>
@@ -113,7 +113,7 @@ const Profile = () => {
                         <h2>{user.name}</h2>
                         <span className="role-tag">{user.role}</span>
                     </div>
-                    
+
                     <div className="sidebar-details">
                         <div className="detail-item">
                             <Mail size={16} /> <span>{user.email}</span>
@@ -155,8 +155,8 @@ const Profile = () => {
                 <div className="profile-main">
                     <div className="section-header">
                         <h3>General Settings</h3>
-                        <button 
-                            className={isEditing ? "btn-cancel" : "btn-edit"} 
+                        <button
+                            className={isEditing ? "btn-cancel" : "btn-edit"}
                             onClick={() => {
                                 if (isEditing) {
                                     setFormData({
@@ -172,7 +172,7 @@ const Profile = () => {
                                 setIsEditing(!isEditing);
                             }}
                         >
-                            {isEditing ? "Cancel" : <><Edit3 size={16}/> Edit Profile</>}
+                            {isEditing ? "Cancel" : <><Edit3 size={16} /> Edit Profile</>}
                         </button>
                     </div>
 
@@ -180,51 +180,51 @@ const Profile = () => {
                         <div className="form-grid">
                             <div className="input-group">
                                 <label>Username</label>
-                                <input 
-                                    type="text" 
+                                <input
+                                    type="text"
                                     disabled={!isEditing}
                                     value={formData.username}
-                                    onChange={(e) => setFormData({...formData, username: e.target.value})}
+                                    onChange={(e) => setFormData({ ...formData, username: e.target.value })}
                                     placeholder="Set unique username"
                                 />
                             </div>
                             <div className="input-group">
                                 <label>Contact Number</label>
-                                <input 
-                                    type="text" 
+                                <input
+                                    type="text"
                                     disabled={!isEditing}
                                     value={formData.contact}
-                                    onChange={(e) => setFormData({...formData, contact: e.target.value})}
+                                    onChange={(e) => setFormData({ ...formData, contact: e.target.value })}
                                     placeholder="+1234567890"
                                 />
                             </div>
                             <div className="input-group">
                                 <label>Location</label>
-                                <input 
-                                    type="text" 
+                                <input
+                                    type="text"
                                     disabled={!isEditing}
                                     value={formData.location}
-                                    onChange={(e) => setFormData({...formData, location: e.target.value})}
+                                    onChange={(e) => setFormData({ ...formData, location: e.target.value })}
                                     placeholder="City, Country"
                                 />
                             </div>
                             <div className="input-group">
                                 <label>Bio</label>
-                                <input 
-                                    type="text" 
+                                <input
+                                    type="text"
                                     disabled={!isEditing}
                                     value={formData.bio}
-                                    onChange={(e) => setFormData({...formData, bio: e.target.value})}
+                                    onChange={(e) => setFormData({ ...formData, bio: e.target.value })}
                                     placeholder="Short bio about yourself"
                                 />
                             </div>
-                             <div className="input-group full-width">
+                            <div className="input-group full-width">
                                 <label>Banner URL</label>
-                                <input 
-                                    type="text" 
+                                <input
+                                    type="text"
                                     disabled={!isEditing}
                                     value={formData.bannerUrl}
-                                    onChange={(e) => setFormData({...formData, bannerUrl: e.target.value})}
+                                    onChange={(e) => setFormData({ ...formData, bannerUrl: e.target.value })}
                                     placeholder="https://images.unsplash.com/..."
                                 />
                             </div>
@@ -234,17 +234,17 @@ const Profile = () => {
                                 <div className="skills-input-container" style={{ opacity: isEditing ? 1 : 0.6 }}>
                                     <div className="skills-tags">
                                         {formData.skills.length === 0 && !isEditing && (
-                                            <span style={{color: '#64748b', fontSize: '0.9rem', padding: '4px'}}>No skills added</span>
+                                            <span style={{ color: '#64748b', fontSize: '0.9rem', padding: '4px' }}>No skills added</span>
                                         )}
                                         {formData.skills.map((skill, idx) => (
                                             <span key={idx} className="skill-tag">
                                                 {skill}
-                                                {isEditing && <button type="button" onClick={() => setFormData({...formData, skills: formData.skills.filter((_, i) => i !== idx)})}>×</button>}
+                                                {isEditing && <button type="button" onClick={() => setFormData({ ...formData, skills: formData.skills.filter((_, i) => i !== idx) })}>×</button>}
                                             </span>
                                         ))}
                                     </div>
                                     {isEditing && (
-                                        <input 
+                                        <input
                                             type="text"
                                             value={skillInput}
                                             onChange={(e) => setSkillInput(e.target.value)}
@@ -252,7 +252,7 @@ const Profile = () => {
                                                 if (e.key === 'Enter' && skillInput.trim()) {
                                                     e.preventDefault();
                                                     if (!formData.skills.includes(skillInput.trim())) {
-                                                        setFormData({...formData, skills: [...formData.skills, skillInput.trim()]});
+                                                        setFormData({ ...formData, skills: [...formData.skills, skillInput.trim()] });
                                                     }
                                                     setSkillInput('');
                                                 }
@@ -265,28 +265,28 @@ const Profile = () => {
 
                             <div className="input-group">
                                 <label>GitHub</label>
-                                <input 
-                                    type="text" 
+                                <input
+                                    type="text"
                                     disabled={!isEditing}
                                     value={formData.socialLinks.github}
-                                    onChange={(e) => setFormData({...formData, socialLinks: {...formData.socialLinks, github: e.target.value}})}
+                                    onChange={(e) => setFormData({ ...formData, socialLinks: { ...formData.socialLinks, github: e.target.value } })}
                                     placeholder="github.com/username"
                                 />
                             </div>
                             <div className="input-group">
                                 <label>LinkedIn</label>
-                                <input 
-                                    type="text" 
+                                <input
+                                    type="text"
                                     disabled={!isEditing}
                                     value={formData.socialLinks.linkedin}
-                                    onChange={(e) => setFormData({...formData, socialLinks: {...formData.socialLinks, linkedin: e.target.value}})}
+                                    onChange={(e) => setFormData({ ...formData, socialLinks: { ...formData.socialLinks, linkedin: e.target.value } })}
                                     placeholder="linkedin.com/in/username"
                                 />
                             </div>
                         </div>
                         {isEditing && (
                             <button type="submit" className="save-btn" disabled={loading}>
-                                {loading ? "Saving..." : <><Save size={18}/> Save Changes</>}
+                                {loading ? "Saving..." : <><Save size={18} /> Save Changes</>}
                             </button>
                         )}
                     </form>
@@ -300,7 +300,7 @@ const Profile = () => {
                                     <p className="email-text">
                                         {user.secondaryEmail || "No secondary email added"}
                                     </p>
-                
+
                                     {user.secondaryEmail && (
                                         <span className={`status-badge ${user.isSecondaryVerified ? 'verified' : 'pending'}`}>
                                             {user.isSecondaryVerified ? 'Verified' : 'Verification Pending'}
@@ -308,7 +308,7 @@ const Profile = () => {
                                     )}
                                 </div>
                             </div>
-        
+
                             {!user.secondaryEmail ? (
                                 <button className="btn-add" onClick={() => setShowAddModal(true)}>
                                     Add Email
@@ -333,7 +333,7 @@ const Profile = () => {
                                 <label>Email Address</label>
                                 <input type="email" value={secondaryEmail} onChange={(e) => setSecondaryEmail(e.target.value)} placeholder="backup@example.com" />
                             </div>
-                            <button className="btn-primary full-width-btn" style={{marginTop: '20px'}} onClick={handleAddEmail}>Send Verification OTP</button>
+                            <button className="btn-primary full-width-btn" style={{ marginTop: '20px' }} onClick={handleAddEmail}>Send Verification OTP</button>
                         </motion.div>
                     </div>
                 )}
@@ -342,12 +342,12 @@ const Profile = () => {
                         <motion.div className="modal-content" initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.9, opacity: 0 }}>
                             <button className="modal-close" onClick={() => setShowVerifyModal(false)}><X size={20} /></button>
                             <h3>Verify Email</h3>
-                            <p style={{color: '#94a3b8', fontSize: '0.85rem', marginBottom: '15px'}}>Enter the OTP sent to your email.</p>
+                            <p style={{ color: '#94a3b8', fontSize: '0.85rem', marginBottom: '15px' }}>Enter the OTP sent to your email.</p>
                             <div className="input-group">
                                 <label>OTP</label>
                                 <input type="text" value={otp} onChange={(e) => setOtp(e.target.value)} placeholder="123456" />
                             </div>
-                            <button className="btn-primary full-width-btn" style={{marginTop: '20px'}} onClick={handleVerifyEmail}>Verify</button>
+                            <button className="btn-primary full-width-btn" style={{ marginTop: '20px' }} onClick={handleVerifyEmail}>Verify</button>
                         </motion.div>
                     </div>
                 )}

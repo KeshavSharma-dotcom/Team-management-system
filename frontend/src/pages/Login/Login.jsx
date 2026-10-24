@@ -12,21 +12,42 @@ const Login = () => {
     const [loading, setLoading] = useState(false)
     const navigate = useNavigate()
 
-    const handleChange = (e) => setFormData({ ...formData, [e.target.name]: e.target.value })
+    const handleChange = (e) => {
+        setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }))
+    }
 
     const handleSubmit = async (e) => {
         e.preventDefault()
         setLoading(true)
+
         try {
             const data = await apiCall('/auth/login', {
                 method: 'POST',
-                body: JSON.stringify(formData)
+                body: JSON.stringify({
+                    email: formData.email.trim(),
+                    password: formData.password
+                })
             })
-            setSession({ token: data.token, user: { ...data.user, email: formData.email } })
+
+            // Normalize user keys so ProtectedRoute can read id or userId
+            const userPayload = {
+                id: data.user.userId || data.user._id || data.user.id,
+                userId: data.user.userId || data.user._id || data.user.id,
+                name: data.user.name,
+                role: data.user.role,
+                avatarColor: data.user.avatarColor,
+                email: formData.email.toLowerCase().trim()
+            }
+
+            // Save token & user payload to storage/context
+            setSession({ token: data.token, user: userPayload })
+
             toast.success('Welcome back!')
-            navigate('/dashboard')
+
+            // Replace history entry to prevent back-navigation to login
+            navigate('/dashboard', { replace: true })
         } catch (error) {
-            toast.error(error.message || 'Login failed')
+            toast.error(error.message || 'Login failed. Please check your credentials.')
         } finally {
             setLoading(false)
         }
@@ -56,6 +77,7 @@ const Login = () => {
                             name="email"
                             placeholder="Email address"
                             required
+                            autoComplete="email"
                             value={formData.email}
                             onChange={handleChange}
                         />
@@ -67,6 +89,7 @@ const Login = () => {
                             name="password"
                             placeholder="Password"
                             required
+                            autoComplete="current-password"
                             value={formData.password}
                             onChange={handleChange}
                         />

@@ -36,7 +36,9 @@
     font-family: 'Inter', sans-serif;
 }
 
-.back-btn:hover { color: #f1f5f9; }
+.back-btn:hover {
+    color: #f1f5f9;
+}
 
 .create-header {
     display: flex;
@@ -65,11 +67,23 @@
     margin: 0 0 4px;
 }
 
-.create-header p { color: #64748b; margin: 0; font-size: 0.9rem; }
+.create-header p {
+    color: #64748b;
+    margin: 0;
+    font-size: 0.9rem;
+}
 
-.create-form { display: flex; flex-direction: column; gap: 20px; }
+.create-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
 
-.input-field { display: flex; flex-direction: column; gap: 8px; }
+.input-field {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
 
 .input-field label {
     font-size: 0.85rem;
@@ -106,7 +120,9 @@
     font-family: 'Inter', sans-serif;
 }
 
-.input-wrapper input::placeholder { color: #475569; }
+.input-wrapper input::placeholder {
+    color: #475569;
+}
 
 /* ── Status Selector ── */
 .status-selector {
@@ -129,7 +145,9 @@
     color: #64748b;
 }
 
-.status-option input[type="radio"] { display: none; }
+.status-option input[type="radio"] {
+    display: none;
+}
 
 .status-option span {
     font-weight: 700;
@@ -148,7 +166,9 @@
     color: #818cf8;
 }
 
-.status-option.selected span { color: #a5b4fc; }
+.status-option.selected span {
+    color: #a5b4fc;
+}
 
 .submit-team-btn {
     width: 100%;
@@ -175,7 +195,10 @@
     box-shadow: 0 8px 30px rgba(99, 102, 241, 0.5);
 }
 
-.submit-team-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+.submit-team-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
 
 .btn-loader {
     width: 20px;
@@ -186,4 +209,9 @@
     animation: spin 0.8s linear infinite;
     display: inline-block;
 }
-@keyframes spin { to { transform: rotate(360deg); } }
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
